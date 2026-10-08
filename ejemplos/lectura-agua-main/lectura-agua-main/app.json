@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "scheme": "acme",
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      "@react-native-vector-icons/ionicons"
+    ],
+    "name": "lecture-agua",
+    "slug": "lecture-agua",
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
