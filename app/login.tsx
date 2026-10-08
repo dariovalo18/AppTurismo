@@ -10,6 +10,7 @@ import { CampoTexto } from '@/componentes/CampoTexto';
 import { useSesion } from '@/proveedores/ProveedorSesion';
 import { useTema } from '@/proveedores/ProveedorTema';
 import { ErrorApi } from '@/servicios/errores';
+import { paletas } from '@/tema/colores';
 
 // Reglas de validación del formulario (zod). Los mensajes se muestran bajo cada campo.
 const esquemaLogin = z.object({
@@ -64,13 +65,16 @@ export default function Login() {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <ScrollView contentContainerStyle={styles.contenido} keyboardShouldPersistTaps="handled">
-          {/* Logo de la app. Docs Image: https://reactnative.dev/docs/image */}
-          <Image
-            source={require('../assets/logo.png')}
-            style={styles.logo}
-            resizeMode="contain"
-            accessibilityLabel="Mi Ciudad Colón"
-          />
+          {/* Logo con fondo transparente. En modo oscuro va sobre un recuadro blanco para que se lea.
+              Docs Image: https://reactnative.dev/docs/image */}
+          <View style={[styles.contenedorLogo, paleta === paletas.oscuro && styles.contenedorLogoOscuro]}>
+            <Image
+              source={require('../assets/logo.png')}
+              style={styles.logo}
+              resizeMode="contain"
+              accessibilityLabel="Mi Ciudad Colón"
+            />
+          </View>
 
           {hayTokenGuardado ? (
             <Boton etiqueta="Entrar con huella o rostro" onPress={entrarConHuella} />
@@ -141,7 +145,9 @@ export default function Login() {
 const styles = StyleSheet.create({
   pantalla: { flex: 1 },
   contenido: { flexGrow: 1, justifyContent: 'center', padding: 24, gap: 16 },
-  logo: { alignSelf: 'center', width: 220, height: 250, marginBottom: 8 },
+  contenedorLogo: { alignSelf: 'center', marginBottom: 8 },
+  contenedorLogoOscuro: { backgroundColor: '#FFFFFF', borderRadius: 24, padding: 16 },
+  logo: { width: 220, height: 230 },
   errorServidor: { fontSize: 16, fontWeight: '600' },
   nota: { fontSize: 16, textAlign: 'center' },
 });
