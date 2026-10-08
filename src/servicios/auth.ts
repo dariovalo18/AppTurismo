@@ -25,7 +25,7 @@ export async function iniciarSesion(
   if (email === emailSinRedMock) {
     throw new ErrorApi('SIN_RED', 'No hay conexión. Probá de nuevo cuando tengas señal.');
   }
-  if (email !== usuarioMock.email || credenciales.password !== contrasenaMock) {
+  if (email !== usuarioMock.email || credenciales.password.trim() !== contrasenaMock) {
     throw new ErrorApi('CREDENCIALES_INVALIDAS', 'El email o la contraseña no son correctos.');
   }
 
