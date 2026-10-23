@@ -2,7 +2,7 @@
 // Contraste fuerte porque se usa al sol y con una mano.
 // Docs de colores en React Native: https://reactnative.dev/docs/colors
 export const coloresClaro = {
-  fondo: '#F4F7F8',
+  fondo: '#f1f1f1',
   superficie: '#FFFFFF',
   texto: '#0B1F2A',
   textoSuave: '#43555F',
