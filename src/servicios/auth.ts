@@ -1,43 +1,22 @@
-import {
-  emailSinRedMock,
-  sesionMock,
-  contrasenaMock,
-  tokenMock,
-  usuarioMock,
-} from '@/mocks/usuarios';
 import type { CredencialesLogin, RespuestaExito, RespuestaLogin, Usuario } from '@/tipos';
-import { ErrorApi } from './errores';
+import { clienteApi } from './clienteApi';
 
-// Hoy devuelve el mock; mañana hace fetch. Es el único archivo que cambia.
-// Siempre asíncrono, aunque el mock responda al instante.
-// Simula el tiempo de respuesta de la red.
-const demora = (ms = 600) => new Promise<void>((resolver) => setTimeout(resolver, ms));
-
-// Valida las credenciales contra el mock y devuelve la respuesta con la forma del PDF.
-// Los errores se lanzan como ErrorApi ({ codigo, mensaje }), igual que los de la API real.
+// Login contra la API real. Los errores salen como ErrorApi (ver clienteApi).
+// OJO: la API espera el campo "contrasena", la app lo llama "password".
 export async function iniciarSesion(
   credenciales: CredencialesLogin,
 ): Promise<RespuestaExito<RespuestaLogin>> {
-  await demora();
-
-  const email = credenciales.email.trim().toLowerCase();
-
-  if (email === emailSinRedMock) {
-    throw new ErrorApi('SIN_RED', 'No hay conexión. Probá de nuevo cuando tengas señal.');
-  }
-  if (email !== usuarioMock.email || credenciales.password.trim() !== contrasenaMock) {
-    throw new ErrorApi('CREDENCIALES_INVALIDAS', 'El email o la contraseña no son correctos.');
-  }
-
-  return sesionMock;
+  const { data } = await clienteApi.post<RespuestaExito<RespuestaLogin>>('/auth/ingreso', {
+    email: credenciales.email.trim(),
+    contrasena: credenciales.password,
+  });
+  return data;
 }
 
 // Para recuperar la sesión a partir del token guardado.
 export async function obtenerPerfil(token: string): Promise<RespuestaExito<Usuario>> {
-  await demora(300);
-
-  if (token !== tokenMock) {
-    throw new ErrorApi('SESION_VENCIDA', 'Tu sesión venció. Ingresá de nuevo.');
-  }
-  return { datos: usuarioMock };
+  const { data } = await clienteApi.get<RespuestaExito<Usuario>>('/yo', {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data;
 }
