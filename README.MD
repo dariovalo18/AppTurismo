@@ -1,0 +1,1 @@
+Chicos la documentacion y el API quedo en esta URL https://entrerios.voipgroup.com/docs
