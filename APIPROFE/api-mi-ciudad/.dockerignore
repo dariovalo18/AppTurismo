@@ -1,9 +1,0 @@
-node_modules
-dist
-coverage
-datos
-archivos
-.git
-.env
-test
-*.tsbuildinfo

@@ -3,9 +3,10 @@ import axios, { isAxiosError } from 'axios';
 import type { RespuestaError } from '@/tipos';
 import { ErrorApi } from './errores';
 
-// Dirección de la API. Con Expo Go no sirve localhost: poné la IP de la compu en .env
+// Dirección de la API, definida en .env (EXPO_PUBLIC_API_URL=https://entrerios.voipgroup.com).
+// Para probar contra la API local, con Expo Go no sirve localhost: poné la IP de la compu
 // (EXPO_PUBLIC_API_URL=http://192.168.1.25:3000).
-export const URL_BASE = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000';
+export const URL_BASE = process.env.EXPO_PUBLIC_API_URL ?? 'https://entrerios.voipgroup.com';
 
 export const clienteApi = axios.create({
   baseURL: URL_BASE,
