@@ -3,6 +3,7 @@ import { ActivityIndicator, FlatList, Image, Pressable, ScrollView, StyleSheet, 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import Storage from 'expo-sqlite/kv-store';
 
 import { Boton } from '@/componentes/Boton';
 import { useTema } from '@/proveedores/ProveedorTema';
@@ -10,6 +11,9 @@ import { listarCategorias } from '@/servicios/categorias';
 import { listarLugares } from '@/servicios/lugares';
 import type { Categoria, Lugar } from '@/tipos';
 import { estadoApertura } from '@/utilidades/horarios';
+
+// Clave donde se guarda la vista elegida (preferencia: va en kv-store, no en secure-store).
+const CLAVE_VISTA = 'miciudad_vista_lugares';
 
 export default function Lugares() {
   const paleta = useTema();
@@ -25,6 +29,19 @@ export default function Lugares() {
   const [enCuadricula, setEnCuadricula] = useState(false); // false = lista, true = 2 columnas
   const [cantidades, setCantidades] = useState<Record<string, number>>({});
   const [total, setTotal] = useState<number | null>(null);
+
+  // Al abrir la pantalla se recupera la vista que se eligió la última vez.
+  useEffect(() => {
+    Storage.getItem(CLAVE_VISTA)
+      .then((guardada) => setEnCuadricula(guardada === 'cuadricula'))
+      .catch(() => {});
+  }, []);
+
+  function cambiarVista() {
+    const nueva = !enCuadricula;
+    setEnCuadricula(nueva);
+    Storage.setItem(CLAVE_VISTA, nueva ? 'cuadricula' : 'lista').catch(() => {});
+  }
 
   // Las categorías se piden una sola vez, y también la lista completa para contar
   // cuántos lugares tiene cada una (la API no manda ese número).
@@ -65,7 +82,7 @@ export default function Lugares() {
         <Text style={[styles.titulo, { color: paleta.texto }]}>Lugares</Text>
         {/* Cambia entre lista (una tarjeta grande por fila) y cuadrícula (dos por fila). */}
         <Pressable
-          onPress={() => setEnCuadricula(!enCuadricula)}
+          onPress={cambiarVista}
           accessibilityRole="button"
           accessibilityLabel={enCuadricula ? 'Ver como lista' : 'Ver como cuadrícula'}
           style={[styles.botonVista, { borderColor: paleta.acento, backgroundColor: paleta.superficie }]}
