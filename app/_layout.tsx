@@ -30,6 +30,7 @@ function Rutas() {
       </Stack.Protected>
       <Stack.Protected guard={haySesionOInvitado}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="lugar/[id]" />
       </Stack.Protected>
     </Stack>
   );
