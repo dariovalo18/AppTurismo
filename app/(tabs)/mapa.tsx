@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import MapView, { Marker } from 'react-native-maps';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
@@ -9,7 +10,9 @@ import { useUbicacion } from '@/hooks/useUbicacion';
 import { useTema } from '@/proveedores/ProveedorTema';
 import { listarCategorias } from '@/servicios/categorias';
 import { listarLugares } from '@/servicios/lugares';
-import type { Lugar } from '@/tipos';
+import type { Categoria, Coordenadas, Lugar } from '@/tipos';
+import { distanciaMetros, formatearDistancia } from '@/utilidades/distancia';
+import { estadoApertura } from '@/utilidades/horarios';
 
 // Centro de Colón (Entre Ríos). El mapa arranca acá aunque la persona esté en otro lado.
 // latitudeDelta / longitudeDelta = cuánto se ve: más chico, más zoom.
@@ -23,17 +26,21 @@ const REGION_COLON = {
 // Docs react-native-maps: https://github.com/react-native-maps/react-native-maps
 export default function Mapa() {
   const paleta = useTema();
+  const router = useRouter();
   const margenes = useSafeAreaInsets(); // espacio de la barra de estado (hora, batería)
   const { estado, coordenadas, puedePedirDeNuevo, pedir } = useUbicacion();
 
   // Referencia al mapa para poder moverlo desde código (botones).
   const mapa = useRef<MapView>(null);
 
-  // Lugares a mostrar y el color de cada categoría: { 'cat-museos': '#8E5A4A', ... }
+  // Lugares a mostrar y las categorías por id: { 'cat-museos': { nombre, color, ... }, ... }
   const [lugares, setLugares] = useState<Lugar[]>([]);
-  const [colores, setColores] = useState<Record<string, string>>({});
+  const [categorias, setCategorias] = useState<Record<string, Categoria>>({});
   const [errorLugares, setErrorLugares] = useState<string | null>(null);
   const [intento, setIntento] = useState(0); // sube con "Reintentar" para volver a pedir
+
+  // El lugar cuyo pin se tocó. null = no se muestra la tarjeta.
+  const [seleccionado, setSeleccionado] = useState<Lugar | null>(null);
 
   // Se piden lugares y categorías a la vez. Si fallan las categorías, igual mostramos
   // los lugares con el color de la app (por eso el .catch(() => [])).
@@ -42,7 +49,7 @@ export default function Mapa() {
     Promise.all([listarLugares(), listarCategorias().catch(() => [])])
       .then(([listaLugares, listaCategorias]) => {
         setLugares(listaLugares);
-        setColores(Object.fromEntries(listaCategorias.map((c) => [c.id, c.color])));
+        setCategorias(Object.fromEntries(listaCategorias.map((c) => [c.id, c])));
       })
       .catch((e) => setErrorLugares(e instanceof Error ? e.message : 'No pudimos cargar los lugares.'));
   }, [intento]);
@@ -75,8 +82,13 @@ export default function Mapa() {
         initialRegion={REGION_COLON}
         showsUserLocation={estado === 'lista'} // el punto azul, solo si hay permiso
         showsMyLocationButton={false} // usamos nuestro propio botón, más grande
+        // Tocar el mapa (fuera de un pin) cierra la tarjeta.
+        // Al tocar un pin, el mapa también recibe el toque con action 'marker-press': ese lo ignoramos.
+        onPress={(e) => {
+          if (e.nativeEvent.action !== 'marker-press') setSeleccionado(null);
+        }}
       >
-        {/* Un marcador por lugar. Al tocarlo, el mapa muestra el nombre y la descripción corta. */}
+        {/* Un marcador por lugar. Sin title: en vez del globito, mostramos nuestra tarjeta. */}
         {lugares.map((lugar) => (
           <Marker
             key={lugar.id}
@@ -84,9 +96,8 @@ export default function Mapa() {
               latitude: lugar.coordenadas.latitud,
               longitude: lugar.coordenadas.longitud,
             }}
-            title={lugar.nombre}
-            description={lugar.descripcionCorta}
-            pinColor={colores[lugar.categoriaId] ?? paleta.acento}
+            pinColor={categorias[lugar.categoriaId]?.color ?? paleta.acento}
+            onPress={() => setSeleccionado(lugar)}
           />
         ))}
       </MapView>
@@ -115,31 +126,85 @@ export default function Mapa() {
         ) : null}
       </View>
 
-      {/* Botón para volver a ver Colón. Siempre visible. */}
-      <Pressable
-        onPress={irAColon}
-        accessibilityRole="button"
-        accessibilityLabel="Ver Colón"
-        style={[
-          styles.botonUbicacion,
-          styles.botonColon,
-          { backgroundColor: paleta.superficie, borderColor: paleta.acento },
-        ]}
-      >
-        <Ionicons name="business-outline" size={26} color={paleta.acento} />
-      </Pressable>
+      {/* Parte de abajo: botones redondos y, si hay un pin tocado, la tarjeta.
+          pointerEvents="box-none": el espacio vacío deja pasar los toques al mapa. */}
+      <View style={styles.abajo} pointerEvents="box-none">
+        <View style={styles.botones} pointerEvents="box-none">
+          {/* Volver a ver Colón. Siempre visible. */}
+          <BotonRedondo icono="business-outline" etiqueta="Ver Colón" onPress={irAColon} />
+          {/* Centrar en la persona. Solo si sabemos dónde está. */}
+          {coordenadas ? <BotonRedondo icono="locate" etiqueta="Ir a mi ubicación" onPress={irAMiUbicacion} /> : null}
+        </View>
 
-      {/* Botón para centrar el mapa en la persona. Solo aparece si sabemos dónde está. */}
-      {coordenadas ? (
-        <Pressable
-          onPress={irAMiUbicacion}
-          accessibilityRole="button"
-          accessibilityLabel="Ir a mi ubicación"
-          style={[styles.botonUbicacion, { backgroundColor: paleta.superficie, borderColor: paleta.acento }]}
-        >
-          <Ionicons name="locate" size={28} color={paleta.acento} />
+        {seleccionado ? (
+          <TarjetaLugar
+            lugar={seleccionado}
+            categoria={categorias[seleccionado.categoriaId] ?? null}
+            ubicacion={coordenadas}
+            onCerrar={() => setSeleccionado(null)}
+            onVerDetalle={() => router.push({ pathname: '/lugar/[id]', params: { id: seleccionado.id } })}
+          />
+        ) : null}
+      </View>
+    </View>
+  );
+}
+
+type Icono = React.ComponentProps<typeof Ionicons>['name'];
+
+function BotonRedondo({ icono, etiqueta, onPress }: { icono: Icono; etiqueta: string; onPress: () => void }) {
+  const paleta = useTema();
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={etiqueta}
+      style={[styles.botonRedondo, { backgroundColor: paleta.superficie, borderColor: paleta.acento }]}
+    >
+      <Ionicons name={icono} size={28} color={paleta.acento} />
+    </Pressable>
+  );
+}
+
+type PropsTarjeta = {
+  lugar: Lugar;
+  categoria: Categoria | null;
+  ubicacion: Coordenadas | null; // null si no hay permiso o GPS
+  onCerrar: () => void;
+  onVerDetalle: () => void;
+};
+
+// Tarjeta que aparece abajo al tocar un pin.
+function TarjetaLugar({ lugar, categoria, ubicacion, onCerrar, onVerDetalle }: PropsTarjeta) {
+  const paleta = useTema();
+  const apertura = estadoApertura(lugar.horarios);
+  // Sin ubicación no hay distancia: lo decimos en vez de esconderlo.
+  const distancia = ubicacion
+    ? `A ${formatearDistancia(distanciaMetros(ubicacion, lugar.coordenadas))} de donde estás`
+    : 'Activá la ubicación para ver a qué distancia está';
+
+  return (
+    <View style={[styles.tarjeta, { backgroundColor: paleta.superficie, borderColor: paleta.borde }]}>
+      <View style={styles.tarjetaEncabezado}>
+        <Text style={[styles.tarjetaNombre, { color: paleta.texto }]} numberOfLines={2}>
+          {lugar.nombre}
+        </Text>
+        <Pressable onPress={onCerrar} accessibilityRole="button" accessibilityLabel="Cerrar" hitSlop={12}>
+          <Ionicons name="close" size={28} color={paleta.textoSuave} />
         </Pressable>
+      </View>
+
+      {categoria ? (
+        <Text style={[styles.tarjetaCategoria, { color: categoria.color }]}>{categoria.nombre}</Text>
       ) : null}
+      {apertura ? (
+        <Text style={[styles.tarjetaDato, { color: apertura.abierto ? paleta.acento : paleta.error }]}>
+          {apertura.texto}
+        </Text>
+      ) : null}
+      <Text style={[styles.tarjetaDato, { color: paleta.texto }]}>{distancia}</Text>
+
+      <Boton etiqueta="Ver detalle" onPress={onVerDetalle} />
     </View>
   );
 }
@@ -149,10 +214,9 @@ const styles = StyleSheet.create({
   avisos: { position: 'absolute', left: 16, right: 16, gap: 10 },
   aviso: { padding: 14, gap: 10, borderRadius: 14, borderWidth: 1 },
   avisoTexto: { fontSize: 16, lineHeight: 22 },
-  botonUbicacion: {
-    position: 'absolute',
-    right: 16,
-    bottom: 24,
+  abajo: { position: 'absolute', left: 16, right: 16, bottom: 16, gap: 12 },
+  botones: { alignSelf: 'flex-end', gap: 12 }, // columna de botones pegada a la derecha
+  botonRedondo: {
     width: 60,
     height: 60,
     borderRadius: 30,
@@ -160,5 +224,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  botonColon: { bottom: 96 }, // queda arriba del botón de mi ubicación
+  tarjeta: { padding: 16, gap: 6, borderRadius: 16, borderWidth: 1 },
+  tarjetaEncabezado: { flexDirection: 'row', alignItems: 'flex-start', gap: 12 },
+  tarjetaNombre: { flex: 1, fontSize: 22, fontWeight: '800' },
+  tarjetaCategoria: { fontSize: 16, fontWeight: '700' },
+  tarjetaDato: { fontSize: 17, fontWeight: '600' },
 });
