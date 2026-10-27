@@ -6,13 +6,14 @@ import MapView, { Marker } from 'react-native-maps';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
 import { Boton } from '@/componentes/Boton';
+import { useRumbo } from '@/hooks/useRumbo';
 import { useUbicacion } from '@/hooks/useUbicacion';
 import { useTema } from '@/proveedores/ProveedorTema';
 import { listarCategorias } from '@/servicios/categorias';
 import { listarLugares } from '@/servicios/lugares';
 import type { Categoria, Coordenadas, Lugar } from '@/tipos';
 import { elegirComoLlegar } from '@/utilidades/comoLlegar';
-import { distanciaMetros, formatearDistancia } from '@/utilidades/distancia';
+import { direccionRelativa, distanciaMetros, formatearDistancia, rumboHacia } from '@/utilidades/distancia';
 import { estadoApertura } from '@/utilidades/horarios';
 
 // Nombre de un ícono de Ionicons (el tipo sale del propio paquete).
@@ -248,6 +249,10 @@ function TarjetaLugar({ lugar, categoria, ubicacion, onCerrar, onVerDetalle }: P
     ? `A ${formatearDistancia(distanciaMetros(ubicacion, lugar.coordenadas))} de donde estás`
     : 'Activá la ubicación para ver a qué distancia está';
 
+  // Flecha: hacia dónde queda el lugar (rumbo) menos hacia dónde apunta el celular = cuánto girarla.
+  const rumboCelular = useRumbo();
+  const giro = ubicacion && rumboCelular !== null ? rumboHacia(ubicacion, lugar.coordenadas) - rumboCelular : null;
+
   return (
     <View style={[styles.tarjeta, { backgroundColor: paleta.superficie, borderColor: paleta.borde }]}>
       <View style={styles.tarjetaEncabezado}>
@@ -267,7 +272,23 @@ function TarjetaLugar({ lugar, categoria, ubicacion, onCerrar, onVerDetalle }: P
           {apertura.texto}
         </Text>
       ) : null}
-      <Text style={[styles.tarjetaDato, { color: paleta.texto }]}>{distancia}</Text>
+      <View style={styles.filaDistancia}>
+        {giro !== null ? (
+          <View
+            accessible
+            accessibilityLabel={`El lugar queda ${direccionRelativa(giro)}`}
+            style={[styles.flecha, { backgroundColor: paleta.acento }]}
+          >
+            <Ionicons
+              name="arrow-up"
+              size={28}
+              color={paleta.sobreAcento}
+              style={{ transform: [{ rotate: `${giro}deg` }] }}
+            />
+          </View>
+        ) : null}
+        <Text style={[styles.tarjetaDato, styles.textoDistancia, { color: paleta.texto }]}>{distancia}</Text>
+      </View>
 
       {/* Dos botones lado a lado. Boton no recibe style, por eso cada uno va dentro de un View con flex: 1. */}
       <View style={styles.tarjetaBotones}>
@@ -306,6 +327,9 @@ const styles = StyleSheet.create({
   tarjetaNombre: { flex: 1, fontSize: 22, fontWeight: '800' },
   tarjetaCategoria: { fontSize: 16, fontWeight: '700' },
   tarjetaDato: { fontSize: 17, fontWeight: '600' },
+  filaDistancia: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  textoDistancia: { flex: 1 },
+  flecha: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center' },
   tarjetaBotones: { flexDirection: 'row', gap: 10, marginTop: 4 },
   tarjetaBoton: { flex: 1 },
   // paddingHorizontal: el primer y el último filtro no quedan pegados al borde,
