@@ -23,7 +23,7 @@
         "backgroundColor": "#FFFFFF"
       }
     },
-    "plugins": [
+       "plugins": [
       "expo-router",
       "expo-secure-store",
       "@react-native-vector-icons/ionicons",
@@ -35,7 +35,13 @@
           "imageWidth": 220
         }
       ],
-      "expo-sqlite"
+      "expo-sqlite",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Usamos tu ubicación para mostrarte qué lugares tenés cerca."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
