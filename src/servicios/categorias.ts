@@ -12,7 +12,11 @@ export async function listarCategorias(): Promise<Categoria[]> {
     if (estado.isConnected === false) throw new ErrorApi('SIN_RED', 'No hay conexión.');
 
     const { data } = await clienteApi.get<RespuestaExito<Categoria[]>>('/categorias');
-    await guardarCategorias(data.datos);
+  //LINEA ANTERIOR  
+  //await guardarCategorias(data.datos);
+  //LINEA NUEVA:
+        // Si falla guardar la copia local, igual mostramos lo que llegó de la API.
+    await guardarCategorias(data.datos).catch(() => {});
     return data.datos;
   } catch (e) {
     if (e instanceof ErrorApi && e.codigo === 'SIN_RED') return leerCategorias();

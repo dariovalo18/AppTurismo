@@ -36,7 +36,9 @@ export async function listarLugares(filtros: FiltrosLugares = {}): Promise<Lugar
       params: { ...filtros, porPagina: 500 },
     });
     // La lista completa (sin filtros) es la que se guarda para usar sin señal.
-    if (!filtros.q && !filtros.categoriaId) await guardarLugares(data.datos);
+    //if (!filtros.q && !filtros.categoriaId) await guardarLugares(data.datos); //LINEA VIEJA
+        // Si falla guardar la copia local, igual mostramos lo que llegó de la API:
+    if (!filtros.q && !filtros.categoriaId) await guardarLugares(data.datos).catch(() => {});
     return data.datos;
   } catch (e) {
     if (e instanceof ErrorApi && e.codigo === 'SIN_RED') return listarDesdeCache(filtros);

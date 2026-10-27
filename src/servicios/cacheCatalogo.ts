@@ -6,10 +6,11 @@ import type { Categoria, Lugar } from '@/tipos';
 
 export async function guardarLugares(lugares: Lugar[]) {
   const db = await obtenerBD();
-  await db.withTransactionAsync(async () => {
-    await db.runAsync('DELETE FROM lugares');
+  // Exclusiva: si ya se está guardando otra cosa, espera su turno en vez de chocar.
+  await db.withExclusiveTransactionAsync(async (tx) => {
+    await tx.runAsync('DELETE FROM lugares');
     for (const lugar of lugares) {
-      await db.runAsync('INSERT INTO lugares (id, json) VALUES (?, ?)', lugar.id, JSON.stringify(lugar));
+      await tx.runAsync('INSERT INTO lugares (id, json) VALUES (?, ?)', lugar.id, JSON.stringify(lugar));
     }
   });
 }
@@ -28,10 +29,11 @@ export async function leerLugar(id: string): Promise<Lugar | null> {
 
 export async function guardarCategorias(categorias: Categoria[]) {
   const db = await obtenerBD();
-  await db.withTransactionAsync(async () => {
-    await db.runAsync('DELETE FROM categorias');
+  // Exclusiva: si ya se está guardando otra cosa, espera su turno en vez de chocar.
+  await db.withExclusiveTransactionAsync(async (tx) => {
+    await tx.runAsync('DELETE FROM categorias');
     for (const categoria of categorias) {
-      await db.runAsync('INSERT INTO categorias (id, json) VALUES (?, ?)', categoria.id, JSON.stringify(categoria));
+      await tx.runAsync('INSERT INTO categorias (id, json) VALUES (?, ?)', categoria.id, JSON.stringify(categoria));
     }
   });
 }
