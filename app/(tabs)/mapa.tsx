@@ -11,6 +11,7 @@ import { useTema } from '@/proveedores/ProveedorTema';
 import { listarCategorias } from '@/servicios/categorias';
 import { listarLugares } from '@/servicios/lugares';
 import type { Categoria, Coordenadas, Lugar } from '@/tipos';
+import { elegirComoLlegar } from '@/utilidades/comoLlegar';
 import { distanciaMetros, formatearDistancia } from '@/utilidades/distancia';
 import { estadoApertura } from '@/utilidades/horarios';
 
@@ -268,7 +269,19 @@ function TarjetaLugar({ lugar, categoria, ubicacion, onCerrar, onVerDetalle }: P
       ) : null}
       <Text style={[styles.tarjetaDato, { color: paleta.texto }]}>{distancia}</Text>
 
-      <Boton etiqueta="Ver detalle" onPress={onVerDetalle} />
+      {/* Dos botones lado a lado. Boton no recibe style, por eso cada uno va dentro de un View con flex: 1. */}
+      <View style={styles.tarjetaBotones}>
+        <View style={styles.tarjetaBoton}>
+          <Boton etiqueta="Ver detalle" onPress={onVerDetalle} />
+        </View>
+        <View style={styles.tarjetaBoton}>
+          <Boton
+            etiqueta="Cómo llegar"
+            variante="secundario"
+            onPress={() => elegirComoLlegar(lugar.nombre, lugar.coordenadas)}
+          />
+        </View>
+      </View>
     </View>
   );
 }
@@ -293,6 +306,8 @@ const styles = StyleSheet.create({
   tarjetaNombre: { flex: 1, fontSize: 22, fontWeight: '800' },
   tarjetaCategoria: { fontSize: 16, fontWeight: '700' },
   tarjetaDato: { fontSize: 17, fontWeight: '600' },
+  tarjetaBotones: { flexDirection: 'row', gap: 10, marginTop: 4 },
+  tarjetaBoton: { flex: 1 },
   // paddingHorizontal: el primer y el último filtro no quedan pegados al borde,
   // pero la fila se desliza de punta a punta de la pantalla.
   chips: { gap: 8, paddingHorizontal: 16, paddingVertical: 6 },

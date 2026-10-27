@@ -8,6 +8,7 @@ import { useTema } from '@/proveedores/ProveedorTema';
 import { listarCategorias } from '@/servicios/categorias';
 import { obtenerLugar } from '@/servicios/lugares';
 import type { Categoria, Lugar } from '@/tipos';
+import { elegirComoLlegar } from '@/utilidades/comoLlegar';
 import { estadoApertura, horariosDelDia, NOMBRES_DIA } from '@/utilidades/horarios';
 
 // Precio de entrada: 0 es gratis y null es que no hay dato.
@@ -83,6 +84,11 @@ export default function DetalleLugar() {
         <Text style={[styles.texto, { color: paleta.texto }]}>{lugar.descripcion}</Text>
 
         <Fila titulo="Dirección" valor={lugar.direccion} />
+        <Boton
+          etiqueta="Cómo llegar"
+          variante="secundario"
+          onPress={() => elegirComoLlegar(lugar.nombre, lugar.coordenadas)}
+        />
         <Fila titulo="Entrada" valor={textoPrecio(lugar.precioEntrada)} />
         <Fila titulo="Accesible en silla de ruedas" valor={lugar.accesible ? 'Sí' : 'No'} />
 
