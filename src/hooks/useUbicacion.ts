@@ -39,6 +39,15 @@ export function useUbicacion() {
         return;
       }
 
+      // 1) La última posición que el teléfono ya conoce: sale al instante (puede ser de hace un rato).
+      //    Puede venir null si el teléfono no tiene ninguna guardada.
+      const ultima = await Location.getLastKnownPositionAsync();
+      if (ultima) {
+        setCoordenadas({ latitud: ultima.coords.latitude, longitud: ultima.coords.longitude });
+        setEstado('lista');
+      }
+
+      // 2) La posición actual, más precisa: tarda un poco más y reemplaza a la anterior.
       const posicion = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.Balanced,
       });

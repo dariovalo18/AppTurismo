@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import MapView, { Marker } from 'react-native-maps';
@@ -13,6 +13,9 @@ import { listarLugares } from '@/servicios/lugares';
 import type { Categoria, Coordenadas, Lugar } from '@/tipos';
 import { distanciaMetros, formatearDistancia } from '@/utilidades/distancia';
 import { estadoApertura } from '@/utilidades/horarios';
+
+// Nombre de un ícono de Ionicons (el tipo sale del propio paquete).
+type Icono = React.ComponentProps<typeof Ionicons>['name'];
 
 // Centro de Colón (Entre Ríos). El mapa arranca acá aunque la persona esté en otro lado.
 // latitudeDelta / longitudeDelta = cuánto se ve: más chico, más zoom.
@@ -41,6 +44,9 @@ export default function Mapa() {
 
   // El lugar cuyo pin se tocó. null = no se muestra la tarjeta.
   const [seleccionado, setSeleccionado] = useState<Lugar | null>(null);
+
+  // Categoría elegida en el filtro. null = "Todos".
+  const [filtro, setFiltro] = useState<string | null>(null);
 
   // Se piden lugares y categorías a la vez. Si fallan las categorías, igual mostramos
   // los lugares con el color de la app (por eso el .catch(() => [])).
@@ -74,6 +80,20 @@ export default function Mapa() {
 
   const sinUbicacion = estado === 'denegada' || estado === 'error';
 
+  // Los pines que se dibujan: todos, o solo los de la categoría elegida.
+  const lugaresVisibles = filtro ? lugares.filter((l) => l.categoriaId === filtro) : lugares;
+
+  // Solo ofrecemos categorías que tienen al menos un lugar, ordenadas como dice la API.
+  const categoriasConLugares = Object.values(categorias)
+    .filter((c) => lugares.some((l) => l.categoriaId === c.id))
+    .sort((a, b) => a.orden - b.orden);
+
+  // Al cambiar el filtro se cierra la tarjeta (el lugar elegido puede quedar oculto).
+  const elegirFiltro = (categoriaId: string | null) => {
+    setFiltro(categoriaId);
+    setSeleccionado(null);
+  };
+
   return (
     <View style={styles.pantalla}>
       <MapView
@@ -89,7 +109,7 @@ export default function Mapa() {
         }}
       >
         {/* Un marcador por lugar. Sin title: en vez del globito, mostramos nuestra tarjeta. */}
-        {lugares.map((lugar) => (
+        {lugaresVisibles.map((lugar) => (
           <Marker
             key={lugar.id}
             coordinate={{
@@ -102,8 +122,30 @@ export default function Mapa() {
         ))}
       </MapView>
 
-      {/* Avisos arriba. El mapa sigue andando aunque falle algo (lo pide el PDF). */}
-      <View style={[styles.avisos, { top: margenes.top + 12 }]}>
+      {/* Parte de arriba: filtros de borde a borde y, debajo, los avisos.
+          pointerEvents="box-none": el espacio vacío deja pasar los toques al mapa. */}
+      <View style={[styles.arriba, { top: margenes.top + 8 }]} pointerEvents="box-none">
+        {/* Filtro por categoría. Se desliza de costado. */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+          <Chip
+            etiqueta={`Todos (${lugares.length})`}
+            icono="apps-outline"
+            activo={filtro === null}
+            onPress={() => elegirFiltro(null)}
+          />
+          {categoriasConLugares.map((c) => (
+            <Chip
+              key={c.id}
+              etiqueta={c.nombre}
+              icono={c.icono as Icono}
+              color={c.color}
+              activo={filtro === c.id}
+              onPress={() => elegirFiltro(c.id)}
+            />
+          ))}
+        </ScrollView>
+
+        {/* Avisos. El mapa sigue andando aunque falle algo (lo pide el PDF). */}
         {sinUbicacion ? (
           <View style={[styles.aviso, { backgroundColor: paleta.superficie, borderColor: paleta.borde }]}>
             <Text style={[styles.avisoTexto, { color: paleta.texto }]}>
@@ -150,8 +192,6 @@ export default function Mapa() {
   );
 }
 
-type Icono = React.ComponentProps<typeof Ionicons>['name'];
-
 function BotonRedondo({ icono, etiqueta, onPress }: { icono: Icono; etiqueta: string; onPress: () => void }) {
   const paleta = useTema();
   return (
@@ -162,6 +202,30 @@ function BotonRedondo({ icono, etiqueta, onPress }: { icono: Icono; etiqueta: st
       style={[styles.botonRedondo, { backgroundColor: paleta.superficie, borderColor: paleta.acento }]}
     >
       <Ionicons name={icono} size={28} color={paleta.acento} />
+    </Pressable>
+  );
+}
+
+type PropsChip = { etiqueta: string; icono: Icono; color?: string; activo: boolean; onPress: () => void };
+
+// Botón del filtro, flotando sobre el mapa con sombra.
+// Elegido: fondo azul de la app y todo en blanco. Sin elegir: fondo claro e ícono del color de la categoría.
+function Chip({ etiqueta, icono, color, activo, onPress }: PropsChip) {
+  const paleta = useTema();
+  const colorIcono = activo ? paleta.sobreAcento : (color ?? paleta.acento);
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityState={{ selected: activo }}
+      style={({ pressed }) => [
+        styles.chip,
+        { backgroundColor: activo ? paleta.acento : paleta.superficie },
+        pressed && { opacity: 0.8 }, // se aclara un poco mientras lo tocás
+      ]}
+    >
+      <Ionicons name={icono} size={20} color={colorIcono} />
+      <Text style={[styles.chipTexto, { color: activo ? paleta.sobreAcento : paleta.texto }]}>{etiqueta}</Text>
     </Pressable>
   );
 }
@@ -211,8 +275,8 @@ function TarjetaLugar({ lugar, categoria, ubicacion, onCerrar, onVerDetalle }: P
 
 const styles = StyleSheet.create({
   pantalla: { flex: 1 },
-  avisos: { position: 'absolute', left: 16, right: 16, gap: 10 },
-  aviso: { padding: 14, gap: 10, borderRadius: 14, borderWidth: 1 },
+  arriba: { position: 'absolute', left: 0, right: 0, gap: 10 },
+  aviso: { marginHorizontal: 16, padding: 14, gap: 10, borderRadius: 14, borderWidth: 1 },
   avisoTexto: { fontSize: 16, lineHeight: 22 },
   abajo: { position: 'absolute', left: 16, right: 16, bottom: 16, gap: 12 },
   botones: { alignSelf: 'flex-end', gap: 12 }, // columna de botones pegada a la derecha
@@ -229,4 +293,22 @@ const styles = StyleSheet.create({
   tarjetaNombre: { flex: 1, fontSize: 22, fontWeight: '800' },
   tarjetaCategoria: { fontSize: 16, fontWeight: '700' },
   tarjetaDato: { fontSize: 17, fontWeight: '600' },
+  // paddingHorizontal: el primer y el último filtro no quedan pegados al borde,
+  // pero la fila se desliza de punta a punta de la pantalla.
+  chips: { gap: 8, paddingHorizontal: 16, paddingVertical: 6 },
+  chip: {
+    minHeight: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 16,
+    borderRadius: 22,
+    // Sombra: elevation en Android; shadow* en iPhone.
+    elevation: 4,
+    shadowColor: '#000000',
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  chipTexto: { fontSize: 16, fontWeight: '700' },
 });
