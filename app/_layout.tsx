@@ -4,6 +4,10 @@ import { StatusBar } from 'expo-status-bar';
 
 import { ProveedorSesion, useSesion } from '@/proveedores/ProveedorSesion';
 import { ProveedorTema, useTema } from '@/proveedores/ProveedorTema';
+import { configurarNotificaciones } from '@/servicios/notificaciones';
+
+// Una sola vez, al cargar la app: cómo se muestran las notificaciones.
+configurarNotificaciones();
 
 // Decide qué pantallas existen según el estado de la sesión.
 function Rutas() {

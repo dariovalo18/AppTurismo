@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import MapView, { Marker } from 'react-native-maps';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
 import { Boton } from '@/componentes/Boton';
+import { avisarLugarMasCercano } from '@/componentes/VigilanteProximidad';
 import { useRumbo } from '@/hooks/useRumbo';
 import { useUbicacion } from '@/hooks/useUbicacion';
 import { useTema } from '@/proveedores/ProveedorTema';
@@ -78,6 +79,19 @@ export default function Mapa() {
   // Vuelve a mostrar Colón entero, como cuando se abre el mapa.
   const irAColon = () => {
     mapa.current?.animateToRegion(REGION_COLON, 800);
+  };
+
+  // Solo en desarrollo (Expo Go): manda ya el aviso del lugar más cercano, sin importar la distancia.
+  // En el APK de release __DEV__ es false y el botón no aparece.
+  const probarAviso = async () => {
+    if (!coordenadas) {
+      Alert.alert('Sin ubicación', 'Activá la ubicación para probar el aviso.');
+      return;
+    }
+    const aviso = await avisarLugarMasCercano(coordenadas, lugares, { radio: Infinity, respetarLimites: false }).catch(
+      () => false,
+    );
+    if (!aviso) Alert.alert('No se pudo avisar', 'Revisá que la app tenga permiso para mandar notificaciones.');
   };
 
   const sinUbicacion = estado === 'denegada' || estado === 'error';
@@ -174,6 +188,8 @@ export default function Mapa() {
           pointerEvents="box-none": el espacio vacío deja pasar los toques al mapa. */}
       <View style={styles.abajo} pointerEvents="box-none">
         <View style={styles.botones} pointerEvents="box-none">
+          {/* Probar el aviso de proximidad. Solo en desarrollo. */}
+          {__DEV__ ? <BotonRedondo icono="flask-outline" etiqueta="Probar aviso de proximidad" onPress={probarAviso} /> : null}
           {/* Volver a ver Colón. Siempre visible. */}
           <BotonRedondo icono="business-outline" etiqueta="Ver Colón" onPress={irAColon} />
           {/* Centrar en la persona. Solo si sabemos dónde está. */}

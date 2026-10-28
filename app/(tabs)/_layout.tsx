@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
+import { VigilanteProximidad } from '@/componentes/VigilanteProximidad';
 import { useTema } from '@/proveedores/ProveedorTema';
 
 type Icono = React.ComponentProps<typeof Ionicons>['name'];
@@ -18,25 +19,30 @@ export default function LayoutTabs() {
   const paleta = useTema();
 
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: paleta.acento,
-        tabBarInactiveTintColor: paleta.textoSuave,
-        tabBarLabelStyle: { fontSize: 13, fontWeight: '600' },
-        tabBarStyle: { backgroundColor: paleta.superficie, borderTopColor: paleta.borde, minHeight: 64 },
-      }}
-    >
-      <Tabs.Screen name="inicio" options={{ title: 'Inicio', tabBarIcon: icono('home-outline') }} />
-      <Tabs.Screen name="mapa" options={{ title: 'Mapa', tabBarIcon: icono('map-outline') }} />
-      <Tabs.Screen name="agenda" options={{ title: 'Agenda', tabBarIcon: icono('calendar-outline') }} />
-      <Tabs.Screen name="recorrido" options={{ title: 'Recorrido', tabBarIcon: icono('footsteps-outline') }} />
-      <Tabs.Screen name="yo" options={{ title: 'Yo', tabBarIcon: icono('person-outline') }} />
+    <>
+      {/* Aviso de proximidad: no se ve, solo escucha la ubicación mientras la app está abierta. */}
+      <VigilanteProximidad />
 
-      {/* Secciones que se abren desde Inicio: no tienen botón propio pero conservan el menú de abajo. */}
-      <Tabs.Screen name="lugares" options={{ href: null }} />
-      <Tabs.Screen name="favoritos" options={{ href: null }} />
-      <Tabs.Screen name="audioguias" options={{ href: null }} />
-    </Tabs>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarActiveTintColor: paleta.acento,
+          tabBarInactiveTintColor: paleta.textoSuave,
+          tabBarLabelStyle: { fontSize: 13, fontWeight: '600' },
+          tabBarStyle: { backgroundColor: paleta.superficie, borderTopColor: paleta.borde, minHeight: 64 },
+        }}
+      >
+        <Tabs.Screen name="inicio" options={{ title: 'Inicio', tabBarIcon: icono('home-outline') }} />
+        <Tabs.Screen name="mapa" options={{ title: 'Mapa', tabBarIcon: icono('map-outline') }} />
+        <Tabs.Screen name="agenda" options={{ title: 'Agenda', tabBarIcon: icono('calendar-outline') }} />
+        <Tabs.Screen name="recorrido" options={{ title: 'Recorrido', tabBarIcon: icono('footsteps-outline') }} />
+        <Tabs.Screen name="yo" options={{ title: 'Yo', tabBarIcon: icono('person-outline') }} />
+
+        {/* Secciones que se abren desde Inicio: no tienen botón propio pero conservan el menú de abajo. */}
+        <Tabs.Screen name="lugares" options={{ href: null }} />
+        <Tabs.Screen name="favoritos" options={{ href: null }} />
+        <Tabs.Screen name="audioguias" options={{ href: null }} />
+      </Tabs>
+    </>
   );
 }
