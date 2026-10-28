@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { Boton } from '@/componentes/Boton';
+import { BotonDescargaAudioguia } from '@/componentes/BotonDescargaAudioguia';
 import { useTema } from '@/proveedores/ProveedorTema';
 import { listarCategorias } from '@/servicios/categorias';
 import { obtenerLugar } from '@/servicios/lugares';
@@ -89,6 +90,7 @@ export default function DetalleLugar() {
           variante="secundario"
           onPress={() => elegirComoLlegar(lugar.nombre, lugar.coordenadas)}
         />
+        <BotonDescargaAudioguia lugar={lugar} />
         <Fila titulo="Entrada" valor={textoPrecio(lugar.precioEntrada)} />
         <Fila titulo="Accesible en silla de ruedas" valor={lugar.accesible ? 'Sí' : 'No'} />
 
