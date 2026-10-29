@@ -101,6 +101,18 @@ src/
 - **Aviso de proximidad** (`expo-notifications`, notificación local): uno por lugar y por día, y como mínimo 10 minutos entre avisos. Respeta las preferencias del usuario (activado o no, y radio de 100, 250 o 500 m); sin cuenta avisa a 250 m. **Funciona mientras la app está abierta.**
 - **Audioguías sin señal** (`expo-file-system`): botón en el detalle para bajar el audio al teléfono.
 
+### Persona 3 · Agenda y notificaciones
+
+- **Agenda por día** empezando por hoy: tira con los próximos 14 días (`GET /eventos?fecha=`). Un evento que pasa la medianoche aparece en los dos días (lo resuelve la API).
+- **Detalle del evento**: qué es, cuándo empieza, cuánto dura, dónde (lugar del catálogo con "Ver el lugar", o dirección suelta), si es gratis, "Cómo llegar".
+- **Estados**: suspendido, cancelado y finalizado se ven con un cartel de color; los cancelados, tachados.
+- **Guardar evento** (pide cuenta, `PUT /yo/eventos-guardados/{id}`) y pestaña **Guardados**. Se pueden guardar programados y suspendidos.
+- **Recordatorio** 1 hora antes (`expo-notifications`, notificación local programada: anda sin señal y en Expo Go). Al tocarlo se abre el evento.
+- **Si un evento guardado se suspende, se cancela o cambia de horario**: la app lo detecta al abrirse, avisa y reprograma o cancela el recordatorio. Además la API manda una push.
+- **Push**: al entrar con cuenta se pide permiso, se obtiene el token de Expo y se registra con `POST /dispositivos`. Al cerrar sesión se da de baja (`DELETE /dispositivos/{token}`) y se borran los recordatorios.
+- **Sin señal**: la agenda y los guardados se guardan en SQLite (tabla `agenda_cache`) y se muestran con el aviso "Sin conexión".
+- **Administración** (`turismo@colon.demo.ar`): en el detalle, botones para suspender, cancelar o volver a programar (`PATCH /eventos/{id}/estado`).
+
 _(Las demás personas completan su sección.)_
 
 ---
@@ -121,3 +133,5 @@ _(Las demás personas completan su sección.)_
 - **Aviso de proximidad desde lejos de Colón:** en el Mapa hay un botón con un frasquito que manda el aviso del lugar más cercano. Aparece solo en desarrollo (Expo Go); en el APK no se ve.
 - **Mapa en el APK:** en Android, `react-native-maps` necesita una API key de Google Maps en `app.json` para verse en el APK. En Expo Go funciona sin key.
 - **Coordenadas:** son las que manda la API de la cátedra, que son aproximadas.
+- **Recordatorio de un evento sin esperar:** guardá un evento que empiece en poco más de 1 hora (o bajá `MINUTOS_ANTES` en `src/servicios/recordatorios.ts` solo para probar).
+- **Push del servidor:** no andan en Expo Go para Android; hace falta un development build o el APK. Además necesitan el `projectId` de EAS en `app.json` (`npx eas-cli init`) y el backend de `/dispositivos` completo.

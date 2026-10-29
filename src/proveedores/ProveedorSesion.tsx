@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from 'react';
 
+import { alSalirDeLaCuenta } from '@/servicios/agendaCuenta';
 import { iniciarSesion, obtenerPerfil } from '@/servicios/auth';
 import { borrarToken, guardarToken, leerToken } from '@/servicios/almacenSesion';
 import { biometriaDisponible, pedirBiometria } from '@/servicios/biometria';
@@ -106,6 +107,8 @@ export function ProveedorSesion({ children }: { children: ReactNode }) {
 
   // Cerrar sesión borra el token y vuelve al login.
   const salir = useCallback(async () => {
+    // Agenda: da de baja el teléfono para push y borra los recordatorios. Va antes de borrar el token.
+    await alSalirDeLaCuenta().catch(() => {});
     await borrarToken();
     setTokenGuardado(null);
     setUsuario(null);
