@@ -10,7 +10,7 @@ import { tenerPermisoNotificaciones } from './notificaciones';
 // Docs: https://docs.expo.dev/versions/latest/sdk/notifications/
 
 // Cuánto antes de que empiece el evento se avisa.
-// ⚠️ PRUEBA: volver a 60 antes del commit.
+// Cuánto antes de que empiece el evento se avisa.
 export const MINUTOS_ANTES = 60;
 
 // Canal de Android propio: la persona puede silenciar la agenda sin silenciar los avisos de proximidad.
