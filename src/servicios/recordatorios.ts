@@ -10,7 +10,6 @@ import { tenerPermisoNotificaciones } from './notificaciones';
 // Docs: https://docs.expo.dev/versions/latest/sdk/notifications/
 
 // Cuánto antes de que empiece el evento se avisa.
-// Cuánto antes de que empiece el evento se avisa.
 export const MINUTOS_ANTES = 60;
 
 // Canal de Android propio: la persona puede silenciar la agenda sin silenciar los avisos de proximidad.
@@ -65,21 +64,13 @@ async function cancelar(notifId: string | null) {
 
 // Programa el aviso MINUTOS_ANTES del inicio. Devuelve el id de la notificación, o null si no corresponde.
 async function programar(evento: Evento): Promise<string | null> {
-  console.log('[Recordatorio] estado:', evento.estado, 'inicio:', evento.inicio);
   if (evento.estado !== 'programado') return null;
   const cuando = new Date(new Date(evento.inicio).getTime() - MINUTOS_ANTES * 60 * 1000);
-  console.log('[Recordatorio] aviso para:', cuando.toString(), '| ahora:', new Date().toString());
-  if (cuando.getTime() <= Date.now()) {
-    console.log('[Recordatorio] NO: la hora del aviso ya pasó');
-    return null;
-  }
-  if (!(await tenerPermisoNotificaciones())) {
-    console.log('[Recordatorio] NO: sin permiso de notificaciones');
-    return null;
-  }
+  if (cuando.getTime() <= Date.now()) return null; // ya pasó la hora del aviso
+  if (!(await tenerPermisoNotificaciones())) return null; // sin permiso la app sigue andando, sin aviso
   await prepararCanal().catch(() => {});
 
-  const id = await Notifications.scheduleNotificationAsync({
+  return Notifications.scheduleNotificationAsync({
     content: {
       title: `En 1 hora: ${evento.titulo}`,
       body: 'Tocá para ver dónde es.',
@@ -87,8 +78,6 @@ async function programar(evento: Evento): Promise<string | null> {
     },
     trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: cuando, channelId: CANAL_EVENTOS },
   });
-  console.log('[Recordatorio] programado OK, id:', id);
-  return id;
 }
 
 // Aviso inmediato cuando un evento guardado cambió de estado.
