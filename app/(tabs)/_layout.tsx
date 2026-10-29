@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
+import { GestorAgenda } from '@/componentes/GestorAgenda';
 import { VigilanteProximidad } from '@/componentes/VigilanteProximidad';
 import { useTema } from '@/proveedores/ProveedorTema';
 
@@ -22,6 +23,8 @@ export default function LayoutTabs() {
     <>
       {/* Aviso de proximidad: no se ve, solo escucha la ubicación mientras la app está abierta. */}
       <VigilanteProximidad />
+      {/* Agenda: registra el teléfono para push, sincroniza recordatorios y abre el evento al tocar el aviso. */}
+      <GestorAgenda />
 
       <Tabs
         screenOptions={{

@@ -35,6 +35,7 @@ function Rutas() {
       <Stack.Protected guard={haySesionOInvitado}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="lugar/[id]" />
+        <Stack.Screen name="evento/[id]" />
       </Stack.Protected>
     </Stack>
   );
