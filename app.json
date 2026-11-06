@@ -42,7 +42,22 @@
           "locationWhenInUsePermission": "Usamos tu ubicación para mostrarte qué lugares tenés cerca."
         }
       ],
-       "expo-notifications"
+       "expo-notifications",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Usamos la cámara para leer el QR de los carteles y sacar fotos de tus visitas.",
+          "recordAudioAndroid": false
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Elegís fotos de tu galería para guardarlas en tu recorrido.",
+          "cameraPermission": "Usamos la cámara para sacar fotos de tus visitas.",
+          "microphonePermission": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

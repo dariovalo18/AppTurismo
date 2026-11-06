@@ -5,6 +5,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { Boton } from '@/componentes/Boton';
 import { BotonDescargaAudioguia } from '@/componentes/BotonDescargaAudioguia';
+import { useSesion } from '@/proveedores/ProveedorSesion';
 import { useTema } from '@/proveedores/ProveedorTema';
 import { listarCategorias } from '@/servicios/categorias';
 import { obtenerLugar } from '@/servicios/lugares';
@@ -23,6 +24,8 @@ export default function DetalleLugar() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const paleta = useTema();
   const router = useRouter();
+  // Persona 4: registrar visita necesita cuenta (sin cuenta no hay dónde guardar el recorrido).
+  const { usuario } = useSesion();
 
   const [lugar, setLugar] = useState<Lugar | null>(null);
   const [categoria, setCategoria] = useState<Categoria | null>(null);
@@ -90,6 +93,14 @@ export default function DetalleLugar() {
           variante="secundario"
           onPress={() => elegirComoLlegar(lugar.nombre, lugar.coordenadas)}
         />
+        {usuario ? (
+          <Boton
+            etiqueta="Registrar visita"
+            onPress={() =>
+              router.push({ pathname: '/visita/nueva', params: { lugarId: lugar.id, origen: 'manual' } })
+            }
+          />
+        ) : null}
         <BotonDescargaAudioguia lugar={lugar} />
         <Fila titulo="Entrada" valor={textoPrecio(lugar.precioEntrada)} />
         <Fila titulo="Accesible en silla de ruedas" valor={lugar.accesible ? 'Sí' : 'No'} />
