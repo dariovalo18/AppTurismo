@@ -36,6 +36,10 @@ function Rutas() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="lugar/[id]" />
         <Stack.Screen name="evento/[id]" />
+        {/* Persona 4: registrar visitas (escáner QR, elegir lugar y formulario) */}
+        <Stack.Screen name="visita/escaner" />
+        <Stack.Screen name="visita/elegir" />
+        <Stack.Screen name="visita/nueva" />
       </Stack.Protected>
     </Stack>
   );
