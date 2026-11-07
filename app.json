@@ -10,7 +10,8 @@
     "ios": {
       "bundleIdentifier": "ar.tur.colon.miciudad",
       "infoPlist": {
-        "NSFaceIDUsageDescription": "Usamos Face ID para que entres rápido sin escribir la contraseña."
+        "NSFaceIDUsageDescription": "Usamos Face ID para que entres rápido sin escribir la contraseña.",
+        "UIBackgroundModes": ["audio"]
       }
     },
     "android": {
@@ -23,7 +24,7 @@
         "backgroundColor": "#FFFFFF"
       }
     },
-       "plugins": [
+    "plugins": [
       "expo-router",
       "expo-secure-store",
       "@react-native-vector-icons/ionicons",
@@ -42,7 +43,7 @@
           "locationWhenInUsePermission": "Usamos tu ubicación para mostrarte qué lugares tenés cerca."
         }
       ],
-       "expo-notifications",
+      "expo-notifications",
       [
         "expo-camera",
         {
@@ -57,7 +58,15 @@
           "cameraPermission": "Usamos la cámara para sacar fotos de tus visitas.",
           "microphonePermission": false
         }
-      ]
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false
+        }
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true

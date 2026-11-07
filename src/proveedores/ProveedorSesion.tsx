@@ -9,10 +9,10 @@ import {
 } from 'react';
 
 import { alSalirDeLaCuenta } from '@/servicios/agendaCuenta';
-import { iniciarSesion, obtenerPerfil } from '@/servicios/auth';
+import { actualizarPerfil, iniciarSesion, obtenerPerfil, registrarse } from '@/servicios/auth';
 import { borrarToken, guardarToken, leerToken } from '@/servicios/almacenSesion';
 import { biometriaDisponible, pedirBiometria } from '@/servicios/biometria';
-import type { CredencialesLogin, Usuario } from '@/tipos';
+import type { CambiosPerfil, CredencialesLogin, DatosRegistro, Usuario } from '@/tipos';
 
 // cargando: leyendo el token guardado
 // sinSesion: hay que mostrar el login
@@ -28,6 +28,8 @@ type ContextoSesion = {
   ingresarConBiometria: () => Promise<boolean>;
   continuarComoInvitado: () => void;
   salir: () => Promise<void>;
+  registrar: (datos: DatosRegistro) => Promise<void>;
+  guardarPerfil: (cambios: CambiosPerfil) => Promise<void>;
 };
 
 const Contexto = createContext<ContextoSesion | null>(null);
@@ -105,6 +107,22 @@ export function ProveedorSesion({ children }: { children: ReactNode }) {
 
   const continuarComoInvitado = useCallback(() => setModo('invitado'), []);
 
+  // Persona 5: registro. Igual que el login: guarda el token y pasa al modo 'sesion'.
+  const registrar = useCallback(async (datos: DatosRegistro) => {
+    const { datos: respuesta } = await registrarse(datos);
+    await guardarToken(respuesta.token);
+    setUsuario(respuesta.usuario);
+    setModo('sesion');
+  }, []);
+
+  // Persona 5: guarda el perfil (PATCH /yo). Si falla, el error lo muestra la pantalla.
+  const guardarPerfil = useCallback(async (cambios: CambiosPerfil) => {
+    const token = await leerToken();
+    if (!token) throw new Error('Tu sesión se cerró. Volvé a ingresar.');
+    const actualizado = await actualizarPerfil(token, cambios);
+    setUsuario(actualizado);
+  }, []);
+
   // Cerrar sesión borra el token y vuelve al login.
   const salir = useCallback(async () => {
     // Agenda: da de baja el teléfono para push y borra los recordatorios. Va antes de borrar el token.
@@ -124,8 +142,10 @@ export function ProveedorSesion({ children }: { children: ReactNode }) {
       ingresarConBiometria,
       continuarComoInvitado,
       salir,
+      registrar,
+      guardarPerfil,
     }),
-    [modo, usuario, tokenGuardado, ingresar, ingresarConBiometria, continuarComoInvitado, salir],
+    [modo, usuario, tokenGuardado, ingresar, ingresarConBiometria, continuarComoInvitado, salir, registrar, guardarPerfil],
   );
 
   return <Contexto.Provider value={valor}>{children}</Contexto.Provider>;

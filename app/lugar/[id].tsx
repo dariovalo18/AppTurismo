@@ -5,6 +5,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { Boton } from '@/componentes/Boton';
 import { BotonDescargaAudioguia } from '@/componentes/BotonDescargaAudioguia';
+import { BotonFavorito } from '@/componentes/BotonFavorito';
 import { useSesion } from '@/proveedores/ProveedorSesion';
 import { useTema } from '@/proveedores/ProveedorTema';
 import { listarCategorias } from '@/servicios/categorias';
@@ -85,6 +86,9 @@ export default function DetalleLugar() {
           </Text>
         ) : null}
 
+        {/* Persona 5: corazón de favoritos (solo con cuenta) */}
+        <BotonFavorito lugarId={lugar.id} />
+        
         <Text style={[styles.texto, { color: paleta.texto }]}>{lugar.descripcion}</Text>
 
         <Fila titulo="Dirección" valor={lugar.direccion} />

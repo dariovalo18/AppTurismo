@@ -31,6 +31,8 @@ function Rutas() {
           Expo Router redirige solo a la otra pantalla. */}
       <Stack.Protected guard={!haySesionOInvitado}>
         <Stack.Screen name="login" />
+        {/* Persona 5: crear cuenta (se abre desde el login) */}
+        <Stack.Screen name="registro" />
       </Stack.Protected>
       <Stack.Protected guard={haySesionOInvitado}>
         <Stack.Screen name="(tabs)" />
