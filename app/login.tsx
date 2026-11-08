@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -22,6 +23,7 @@ type FormLogin = z.infer<typeof esquemaLogin>;
 
 export default function Login() {
   const paleta = useTema();
+  const router = useRouter();
   const { ingresar, ingresarConBiometria, continuarComoInvitado, hayTokenGuardado } = useSesion();
   const [errorServidor, setErrorServidor] = useState<string | null>(null);
 
@@ -122,6 +124,14 @@ export default function Login() {
 
           <Boton etiqueta="Ingresar" onPress={handleSubmit(enviar)} cargando={isSubmitting} />
 
+          {/* Persona 5: crear una cuenta nueva */}
+          <Boton
+            etiqueta="Crear una cuenta"
+            variante="secundario"
+            onPress={() => router.push('/registro')}
+            deshabilitado={isSubmitting}
+          />
+          
           {/* Mapa y lugares no piden cuenta (ver PDF): se puede entrar como invitado. */}
           <Text style={[styles.nota, { color: paleta.textoSuave }]}>
             No necesitás cuenta para ver el mapa y los lugares. La cuenta sirve para guardar tus

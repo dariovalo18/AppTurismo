@@ -1,4 +1,11 @@
-import type { CredencialesLogin, RespuestaExito, RespuestaLogin, Usuario } from '@/tipos';
+import type {
+  CambiosPerfil,
+  CredencialesLogin,
+  DatosRegistro,
+  RespuestaExito,
+  RespuestaLogin,
+  Usuario,
+} from '@/tipos';
 import { clienteApi } from './clienteApi';
 
 // Login contra la API real. Los errores salen como ErrorApi (ver clienteApi).
@@ -28,4 +35,22 @@ export async function obtenerPerfil(token: string): Promise<RespuestaExito<Usuar
   });
   console.log('listo, me llego el perfil de', data.datos.email);
   return data;
+}
+
+// Registro. Devuelve lo mismo que el login: el token y el usuario.
+export async function registrarse(datos: DatosRegistro): Promise<RespuestaExito<RespuestaLogin>> {
+  const { data } = await clienteApi.post<RespuestaExito<RespuestaLogin>>('/auth/registro', {
+    nombre: datos.nombre.trim(),
+    email: datos.email.trim(),
+    contrasena: datos.password,
+  });
+  return data;
+}
+
+// PATCH /yo. Cambia el nombre o las preferencias y devuelve el usuario actualizado.
+export async function actualizarPerfil(token: string, cambios: CambiosPerfil): Promise<Usuario> {
+  const { data } = await clienteApi.patch<RespuestaExito<Usuario>>('/yo', cambios, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return data.datos;
 }
