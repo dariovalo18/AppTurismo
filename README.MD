@@ -1,6 +1,6 @@
 Chicos la documentacion y el API quedo en esta URL https://entrerios.voipgroup.com/docs
 
-# Mi Ciudad Colón · Guía turística
+# Mi Ciudad Colón · Guía turística - 
 
 App móvil para el turista que visita Colón (Entre Ríos): lugares, mapa con lo que tenés cerca, agenda de eventos, tu recorrido y audioguías. Funciona sin señal con la información que ya se descargó.
 
