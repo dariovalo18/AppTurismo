@@ -26,7 +26,14 @@ function Rutas() {
   const haySesionOInvitado = modo === 'sesion' || modo === 'invitado';
 
   return (
-    <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: paleta.fondo } }}>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: paleta.fondo },
+        // Volver atrás arrastrando desde cualquier parte de la pantalla (iOS).
+        fullScreenGestureEnabled: true,
+      }}
+    >
       {/* Stack.Protected: la ruta solo es accesible si guard es true. Al cambiar la sesión,
           Expo Router redirige solo a la otra pantalla. */}
       <Stack.Protected guard={!haySesionOInvitado}>

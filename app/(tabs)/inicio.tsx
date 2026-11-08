@@ -1,8 +1,10 @@
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, type Href } from 'expo-router';
 import MapView, { Marker } from 'react-native-maps';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import Storage from 'expo-sqlite/kv-store';
 
 import { Boton } from '@/componentes/Boton';
 import { useCatalogo } from '@/hooks/useCatalogo';
@@ -20,6 +22,8 @@ const CENTRO_COLON = { latitud: -32.2236, longitud: -58.1427 };
 const RADIO_ZONA_COLON_METROS = 30000;
 // Cuántos lugares mostrar en "Cerca tuyo".
 const CANTIDAD_CERCA = 5;
+// Clave donde se guarda la solapa elegida (preferencia: va en kv-store, no en secure-store).
+const CLAVE_SOLAPA = 'miciudad_solapa_inicio';
 
 // Accesos a las pantallas que no tienen pestaña propia (en _layout tienen href: null).
 const accesos: { titulo: string; ruta: Href; icono: Icono }[] = [
@@ -33,6 +37,21 @@ export default function Inicio() {
   const { usuario } = useSesion();
   const { estado, coordenadas, puedePedirDeNuevo, pedir } = useUbicacion();
   const { lugares, categorias, cargando, error, reintentar } = useCatalogo();
+  const [solapa, setSolapa] = useState<'cerca' | 'interes'>('cerca');
+
+  // Al abrir la pantalla se recupera la solapa que se eligió la última vez.
+  useEffect(() => {
+    Storage.getItem(CLAVE_SOLAPA)
+      .then((guardada) => {
+        if (guardada === 'cerca' || guardada === 'interes') setSolapa(guardada);
+      })
+      .catch(() => {});
+  }, []);
+
+  const elegirSolapa = (nueva: 'cerca' | 'interes') => {
+    setSolapa(nueva);
+    Storage.setItem(CLAVE_SOLAPA, nueva).catch(() => {});
+  };
 
   // Sin usuario (invitado) se saluda genérico.
   const saludo = usuario ? `Hola, ${usuario.nombre.split(' ')[0]}` : 'Hola, visitante';
@@ -49,7 +68,18 @@ export default function Inicio() {
         .slice(0, CANTIDAD_CERCA)
     : [];
 
-  const abrirDetalle = (id: string) => router.push({ pathname: '/lugar/[id]', params: { id } });
+  // "De tu interés cerca tuyo": lo mismo, pero solo de las categorías favoritas de la persona.
+  const categoriasInteres = usuario?.preferencias.categoriasFavoritas ?? [];
+  const cercanosInteres = coordenadas
+    ? lugares
+        .filter((lugar) => categoriasInteres.includes(lugar.categoriaId))
+        .map((lugar) => ({ lugar, metros: distanciaMetros(coordenadas, lugar.coordenadas) }))
+        .sort((a, b) => a.metros - b.metros)
+        .slice(0, CANTIDAD_CERCA)
+    : [];
+  const visibles = solapa === 'cerca' ? cercanos : cercanosInteres;
+
+  const abrirDetalle =(id: string) => router.push({ pathname: '/lugar/[id]', params: { id } });
 
   return (
     <SafeAreaView edges={['top']} style={[styles.pantalla, { backgroundColor: paleta.fondo }]}>
@@ -92,7 +122,30 @@ export default function Inicio() {
           </View>
         </Pressable>
 
-        <Text style={[styles.subtitulo, { color: paleta.texto }]}>Cerca tuyo</Text>
+        <View style={styles.solapas}>
+          {(
+            [
+              { clave: 'cerca', titulo: 'Cerca tuyo' },
+              { clave: 'interes', titulo: 'De tu interés cerca tuyo' },
+            ] as const
+          ).map(({ clave, titulo }) => {
+            const activa = solapa === clave;
+            return (
+              <Pressable
+                key={clave}
+                onPress={() => elegirSolapa(clave)}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: activa }}
+                style={[
+                  styles.solapa,
+                  { backgroundColor: activa ? paleta.acento : paleta.superficie, borderColor: activa ? paleta.acento : paleta.borde },
+                ]}
+              >
+                <Text style={[styles.solapaTexto, { color: activa ? '#FFFFFF' : paleta.texto }]}>{titulo}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
 
         {cargando || estado === 'cargando' ? (
           <ActivityIndicator size="large" color={paleta.acento} />
@@ -115,9 +168,17 @@ export default function Inicio() {
               onPress={estado === 'denegada' && !puedePedirDeNuevo ? () => Linking.openSettings() : pedir}
             />
           </View>
+        ) : solapa === 'interes' && categoriasInteres.length === 0 ? (
+          <Text style={[styles.mensaje, { color: paleta.textoSuave }]}>
+            {usuario
+              ? 'Todavía no elegiste categorías de tu interés. Podés hacerlo desde tu perfil.'
+              : 'Ingresá con tu cuenta para ver lugares de tu interés.'}
+          </Text>
+        ) : visibles.length === 0 ? (
+          <Text style={[styles.mensaje, { color: paleta.textoSuave }]}>No hay lugares para mostrar.</Text>
         ) : (
           <View style={styles.lista}>
-            {cercanos.map(({ lugar, metros }) => (
+            {visibles.map(({ lugar, metros }) => (
               <FilaCercano
                 key={lugar.id}
                 lugar={lugar}
@@ -204,6 +265,9 @@ const styles = StyleSheet.create({
   },
   etiquetaMapaTexto: { fontSize: 15, fontWeight: '700' },
   subtitulo: { fontSize: 22, fontWeight: '800' },
+  solapas: { flexDirection: 'row', gap: 8 },
+  solapa: { flex: 1, minHeight: 48, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 8, borderRadius: 14, borderWidth: 1 },
+  solapaTexto: { fontSize: 16, fontWeight: '700', textAlign: 'center' },
   bloque: { gap: 12 },
   mensaje: { fontSize: 17, lineHeight: 24 },
   lista: { gap: 10 },
