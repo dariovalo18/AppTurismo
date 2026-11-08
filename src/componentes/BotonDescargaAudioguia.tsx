@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Texto as Text } from '@/componentes/Texto';
 
 import { Boton } from '@/componentes/Boton';
 import { useTema } from '@/proveedores/ProveedorTema';

@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Texto as Text } from '@/componentes/Texto';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useTema } from '@/proveedores/ProveedorTema';

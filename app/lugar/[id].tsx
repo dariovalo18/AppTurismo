@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, Linking, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Image, Linking, ScrollView, StyleSheet, View } from 'react-native';
+import { Texto as Text } from '@/componentes/Texto';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
@@ -81,7 +82,7 @@ export default function DetalleLugar() {
         <Text style={[styles.titulo, { color: paleta.texto }]}>{lugar.nombre}</Text>
         {categoria ? <Text style={[styles.categoria, { color: paleta.acento }]}>{categoria.nombre}</Text> : null}
         {apertura ? (
-          <Text style={[styles.apertura, { color: apertura.abierto ? paleta.acento : paleta.error }]}>
+          <Text style={[styles.apertura, { color: apertura.abierto ? paleta.secundario : paleta.error }]}>
             {apertura.texto}
           </Text>
         ) : null}
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
   centro: { alignItems: 'center', justifyContent: 'center', gap: 12, padding: 16 },
   contenido: { padding: 16, gap: 12 },
   fotos: { gap: 8 },
-  foto: { width: 300, height: 200, borderRadius: 12 },
+  foto: { width: 300, height: 200,},
   titulo: { fontSize: 28, fontWeight: '800' },
   categoria: { fontSize: 18, fontWeight: '700' },
   apertura: { fontSize: 18, fontWeight: '700' },

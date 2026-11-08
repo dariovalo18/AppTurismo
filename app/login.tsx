@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { Texto as Text } from '@/componentes/Texto';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -156,7 +157,7 @@ const styles = StyleSheet.create({
   pantalla: { flex: 1 },
   contenido: { flexGrow: 1, justifyContent: 'center', padding: 24, gap: 16 },
   contenedorLogo: { alignSelf: 'center', marginBottom: 8 },
-  contenedorLogoOscuro: { backgroundColor: '#FFFFFF', borderRadius: 24, padding: 16 },
+  contenedorLogoOscuro: { backgroundColor: '#FFFFFF', padding: 16 },
   logo: { width: 220, height: 230 },
   errorServidor: { fontSize: 16, fontWeight: '600' },
   nota: { fontSize: 16, textAlign: 'center' },

@@ -11,7 +11,9 @@
       "bundleIdentifier": "ar.tur.colon.miciudad",
       "infoPlist": {
         "NSFaceIDUsageDescription": "Usamos Face ID para que entres rápido sin escribir la contraseña.",
-        "UIBackgroundModes": ["audio"]
+        "UIBackgroundModes": [
+          "audio"
+        ]
       }
     },
     "android": {
@@ -67,7 +69,8 @@
           "recordAudioAndroid": false
         }
       ],
-      "expo-asset"
+      "expo-asset",
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true

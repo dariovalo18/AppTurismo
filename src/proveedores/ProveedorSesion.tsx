@@ -23,6 +23,9 @@ type Modo = 'cargando' | 'sinSesion' | 'invitado' | 'sesion';
 type ContextoSesion = {
   modo: Modo;
   usuario: Usuario | null;
+  // true justo después de ingresar o registrarse: la app pregunta primero por los intereses.
+  preguntarIntereses: boolean;
+  terminarIntereses: () => void;
   hayTokenGuardado: boolean;
   ingresar: (credenciales: CredencialesLogin) => Promise<void>;
   ingresarConBiometria: () => Promise<boolean>;
@@ -38,6 +41,7 @@ const Contexto = createContext<ContextoSesion | null>(null);
 export function ProveedorSesion({ children }: { children: ReactNode }) {
   const [modo, setModo] = useState<Modo>('cargando');
   const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const [preguntarIntereses, setPreguntarIntereses] = useState(false);
   const [tokenGuardado, setTokenGuardado] = useState<string | null>(null);
 
   // Al abrir la app: si hay token guardado, lo dejamos listo para el
@@ -87,6 +91,7 @@ export function ProveedorSesion({ children }: { children: ReactNode }) {
     await guardarToken(datos.token);
     console.log('[Login] sesión iniciada, modo -> sesion');
     setUsuario(datos.usuario);
+    setPreguntarIntereses(true);
     setModo('sesion');
   }, []);
 
@@ -105,6 +110,8 @@ export function ProveedorSesion({ children }: { children: ReactNode }) {
     }
   }, [tokenGuardado]);
 
+  const terminarIntereses = useCallback(() => setPreguntarIntereses(false), []);
+
   const continuarComoInvitado = useCallback(() => setModo('invitado'), []);
 
   // Persona 5: registro. Igual que el login: guarda el token y pasa al modo 'sesion'.
@@ -112,6 +119,7 @@ export function ProveedorSesion({ children }: { children: ReactNode }) {
     const { datos: respuesta } = await registrarse(datos);
     await guardarToken(respuesta.token);
     setUsuario(respuesta.usuario);
+    setPreguntarIntereses(true);
     setModo('sesion');
   }, []);
 
@@ -130,6 +138,7 @@ export function ProveedorSesion({ children }: { children: ReactNode }) {
     await borrarToken();
     setTokenGuardado(null);
     setUsuario(null);
+    setPreguntarIntereses(false);
     setModo('sinSesion');
   }, []);
 
@@ -137,6 +146,8 @@ export function ProveedorSesion({ children }: { children: ReactNode }) {
     () => ({
       modo,
       usuario,
+      preguntarIntereses,
+      terminarIntereses,
       hayTokenGuardado: tokenGuardado !== null,
       ingresar,
       ingresarConBiometria,
@@ -145,7 +156,7 @@ export function ProveedorSesion({ children }: { children: ReactNode }) {
       registrar,
       guardarPerfil,
     }),
-    [modo, usuario, tokenGuardado, ingresar, ingresarConBiometria, continuarComoInvitado, salir, registrar, guardarPerfil],
+    [modo, usuario, preguntarIntereses, terminarIntereses, tokenGuardado, ingresar, ingresarConBiometria, continuarComoInvitado, salir, registrar, guardarPerfil],
   );
 
   return <Contexto.Provider value={valor}>{children}</Contexto.Provider>;

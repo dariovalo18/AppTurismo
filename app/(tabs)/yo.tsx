@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native';
+import { Texto as Text } from '@/componentes/Texto';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
@@ -208,11 +209,10 @@ const styles = StyleSheet.create({
     gap: 12,
     padding: 14,
     minHeight: 64,
-    borderRadius: 12,
     borderWidth: 1,
   },
   textoSwitch: { flex: 1, fontSize: 18 },
   opciones: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-  opcion: { minHeight: 48, paddingHorizontal: 16, justifyContent: 'center', borderRadius: 24, borderWidth: 2 },
+  opcion: { minHeight: 48, paddingHorizontal: 16, justifyContent: 'center', borderWidth: 2 },
   opcionTexto: { fontSize: 17, fontWeight: '700' },
 });

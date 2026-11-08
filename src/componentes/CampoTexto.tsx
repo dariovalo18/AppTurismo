@@ -44,10 +44,11 @@ const styles = StyleSheet.create({
   etiqueta: { fontSize: 18, fontWeight: '600' },
   input: {
     minHeight: 56,
-    borderWidth: 2,
-    borderRadius: 12,
+    // Campo "de formulario en papel": solo línea abajo, sin esquinas redondeadas.
+    borderBottomWidth: 2,
     paddingHorizontal: 14,
     fontSize: 18,
+    fontFamily: 'HankenGrotesk_500Medium',
   },
   error: { fontSize: 16 },
 });

@@ -1,10 +1,12 @@
 import { ActivityIndicator, View } from 'react-native';
 import { Stack } from 'expo-router';
+import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
 
 import { ProveedorSesion, useSesion } from '@/proveedores/ProveedorSesion';
 import { ProveedorTema, useTema } from '@/proveedores/ProveedorTema';
 import { configurarNotificaciones } from '@/servicios/notificaciones';
+import { archivosFuentes } from '@/tema/fuentes';
 
 // Una sola vez, al cargar la app: cómo se muestran las notificaciones.
 configurarNotificaciones();
@@ -13,9 +15,10 @@ configurarNotificaciones();
 function Rutas() {
   const { modo } = useSesion();
   const paleta = useTema();
+  const [fuentesListas] = useFonts(archivosFuentes);
 
-  // Mientras se lee el token guardado mostramos una ruedita, para no parpadear el login.
-  if (modo === 'cargando') {
+  // Mientras se lee el token guardado y se cargan las fuentes mostramos una ruedita, para no parpadear.
+  if (modo === 'cargando' || !fuentesListas) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: paleta.fondo }}>
         <ActivityIndicator size="large" color={paleta.acento} />
@@ -43,6 +46,7 @@ function Rutas() {
       </Stack.Protected>
       <Stack.Protected guard={haySesionOInvitado}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="intereses" options={{ gestureEnabled: false }} />
         <Stack.Screen name="lugar/[id]" />
         <Stack.Screen name="evento/[id]" />
         {/* Persona 4: registrar visitas (escáner QR, elegir lugar y formulario) */}

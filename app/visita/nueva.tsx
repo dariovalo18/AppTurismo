@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Image, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Texto as Text } from '@/componentes/Texto';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
@@ -168,8 +169,8 @@ const styles = StyleSheet.create({
   subtitulo: { fontSize: 16, fontWeight: '600' },
   titulo: { fontSize: 28, fontWeight: '800' },
   etiqueta: { fontSize: 18, fontWeight: '600', marginTop: 8 },
-  foto: { width: '100%', height: 220, borderRadius: 12 },
-  nota: { minHeight: 120, borderWidth: 2, borderRadius: 12, padding: 14, fontSize: 18 },
+  foto: { width: '100%', height: 220,},
+  nota: { minHeight: 120, borderWidth: 2, padding: 14, fontSize: 18 },
   contador: { fontSize: 16, textAlign: 'right' },
   error: { fontSize: 16, lineHeight: 22 },
   mensaje: { fontSize: 18, textAlign: 'center' },

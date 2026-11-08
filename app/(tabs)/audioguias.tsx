@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Texto as Text } from '@/componentes/Texto';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
 import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
@@ -255,10 +256,10 @@ const styles = StyleSheet.create({
   subtitulo: { fontSize: 22, fontWeight: '800', marginTop: 8 },
   bloque: { gap: 12 },
   mensaje: { fontSize: 17, lineHeight: 24 },
-  reproductor: { padding: 16, gap: 12, borderRadius: 16, borderWidth: 1 },
+  reproductor: { padding: 16, gap: 12, borderWidth: 1 },
   nombre: { fontSize: 24, fontWeight: '800' },
   detalle: { fontSize: 16 },
-  barra: { height: 10, borderRadius: 5, overflow: 'hidden' },
+  barra: { height: 10, overflow: 'hidden' },
   barraLlena: { height: '100%' },
   tiempos: { flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap' },
   tiempo: { fontSize: 18, fontWeight: '700' },
@@ -271,7 +272,6 @@ const styles = StyleSheet.create({
     gap: 12,
     padding: 14,
     minHeight: 64,
-    borderRadius: 14,
     borderWidth: 2,
   },
   filaTextos: { flex: 1, gap: 2 },

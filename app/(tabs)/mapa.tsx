@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Alert, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Texto as Text } from '@/componentes/Texto';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import MapView, { Marker } from 'react-native-maps';
@@ -284,7 +285,7 @@ function TarjetaLugar({ lugar, categoria, ubicacion, onCerrar, onVerDetalle }: P
         <Text style={[styles.tarjetaCategoria, { color: categoria.color }]}>{categoria.nombre}</Text>
       ) : null}
       {apertura ? (
-        <Text style={[styles.tarjetaDato, { color: apertura.abierto ? paleta.acento : paleta.error }]}>
+        <Text style={[styles.tarjetaDato, { color: apertura.abierto ? paleta.secundario : paleta.error }]}>
           {apertura.texto}
         </Text>
       ) : null}
@@ -326,7 +327,7 @@ function TarjetaLugar({ lugar, categoria, ubicacion, onCerrar, onVerDetalle }: P
 const styles = StyleSheet.create({
   pantalla: { flex: 1 },
   arriba: { position: 'absolute', left: 0, right: 0, gap: 10 },
-  aviso: { marginHorizontal: 16, padding: 14, gap: 10, borderRadius: 14, borderWidth: 1 },
+  aviso: { marginHorizontal: 16, padding: 14, gap: 10, borderWidth: 1 },
   avisoTexto: { fontSize: 16, lineHeight: 22 },
   abajo: { position: 'absolute', left: 16, right: 16, bottom: 16, gap: 12 },
   botones: { alignSelf: 'flex-end', gap: 12 }, // columna de botones pegada a la derecha
@@ -338,7 +339,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  tarjeta: { padding: 16, gap: 6, borderRadius: 16, borderWidth: 1 },
+  tarjeta: { padding: 16, gap: 6, borderWidth: 1 },
   tarjetaEncabezado: { flexDirection: 'row', alignItems: 'flex-start', gap: 12 },
   tarjetaNombre: { flex: 1, fontSize: 22, fontWeight: '800' },
   tarjetaCategoria: { fontSize: 16, fontWeight: '700' },
@@ -357,7 +358,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
     paddingHorizontal: 16,
-    borderRadius: 22,
     // Sombra: elevation en Android; shadow* en iPhone.
     elevation: 4,
     shadowColor: '#000000',

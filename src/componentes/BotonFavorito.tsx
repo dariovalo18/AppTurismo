@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { Texto as Text } from '@/componentes/Texto';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import * as Haptics from 'expo-haptics';
 
@@ -90,7 +91,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
     minHeight: 56,
-    borderRadius: 12,
     borderWidth: 2,
     paddingHorizontal: 16,
   },

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Texto as Text } from '@/componentes/Texto';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, type Href } from 'expo-router';
 import MapView, { Marker } from 'react-native-maps';
@@ -233,7 +234,7 @@ function FilaCercano({ lugar, categoria, distancia, onPress }: PropsFila) {
           {lugar.nombre}
         </Text>
         {apertura ? (
-          <Text style={[styles.aperturaFila, { color: apertura.abierto ? paleta.acento : paleta.error }]}>
+          <Text style={[styles.aperturaFila, { color: apertura.abierto ? paleta.secundario : paleta.error }]}>
             {apertura.texto}
           </Text>
         ) : null}
@@ -250,7 +251,7 @@ const styles = StyleSheet.create({
   encabezado: { gap: 4 },
   saludo: { fontSize: 32, fontWeight: '800' },
   pregunta: { fontSize: 18 },
-  marcoMapa: { height: 220, borderRadius: 18, borderWidth: 1, overflow: 'hidden' },
+  marcoMapa: { height: 220, borderWidth: 1, overflow: 'hidden' },
   etiquetaMapa: {
     position: 'absolute',
     right: 10,
@@ -260,19 +261,18 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    borderRadius: 20,
     elevation: 3,
   },
   etiquetaMapaTexto: { fontSize: 15, fontWeight: '700' },
   subtitulo: { fontSize: 22, fontWeight: '800' },
   solapas: { flexDirection: 'row', gap: 8 },
-  solapa: { flex: 1, minHeight: 48, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 8, borderRadius: 14, borderWidth: 1 },
+  solapa: { flex: 1, minHeight: 48, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 8, borderWidth: 1 },
   solapaTexto: { fontSize: 16, fontWeight: '700', textAlign: 'center' },
   bloque: { gap: 12 },
   mensaje: { fontSize: 17, lineHeight: 24 },
   lista: { gap: 10 },
-  fila: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 12, borderRadius: 14, borderWidth: 1 },
-  iconoFila: { width: 48, height: 48, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
+  fila: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 12, borderWidth: 1 },
+  iconoFila: { width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
   textosFila: { flex: 1, gap: 2 },
   nombreFila: { fontSize: 18, fontWeight: '700' },
   aperturaFila: { fontSize: 15, fontWeight: '600' },
@@ -285,7 +285,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 6,
     padding: 10,
-    borderRadius: 14,
     borderWidth: 1,
   },
   accesoTexto: { fontSize: 15, fontWeight: '700', textAlign: 'center' },

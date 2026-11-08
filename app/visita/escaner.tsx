@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
-import { ActivityIndicator, Linking, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Linking, StyleSheet, View } from 'react-native';
+import { Texto as Text } from '@/componentes/Texto';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as Haptics from 'expo-haptics';
@@ -112,7 +113,7 @@ const styles = StyleSheet.create({
   centro: { alignItems: 'center', justifyContent: 'center', gap: 12, padding: 16 },
   superposicion: { flex: 1, padding: 16, justifyContent: 'space-between' },
   centroVisor: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  marco: { width: 240, height: 240, borderWidth: 4, borderColor: '#FFFFFF', borderRadius: 16 },
-  cartel: { borderRadius: 12, padding: 14 },
+  marco: { width: 240, height: 240, borderWidth: 4, borderColor: '#FFFFFF',},
+  cartel: { padding: 14 },
   mensaje: { fontSize: 18, lineHeight: 26, textAlign: 'center' },
 });

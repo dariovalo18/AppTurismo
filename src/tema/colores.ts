@@ -1,28 +1,47 @@
-// ESTÉTICA: paleta de colores de la app (modo claro y oscuro). El azul sale del logo.
+// ESTÉTICA: paleta de colores de la app (modo claro y oscuro). Tonos cálidos de la costa del
+// río Uruguay: arena, terracota de los ladrillos de las termas y verde agua del río.
 // Contraste fuerte porque se usa al sol y con una mano.
 // Docs de colores en React Native: https://reactnative.dev/docs/colors
 export const coloresClaro = {
-  fondo: '#f1f1f1',
-  superficie: '#FFFFFF',
-  texto: '#0B1F2A',
-  textoSuave: '#43555F',
-  acento: '#0B4F7C',
-  sobreAcento: '#FFFFFF',
-  borde: '#B8C7CE',
-  error: '#B3261E',
+  fondo: '#F3E9D8',
+  superficie: '#FBF6EC',
+  texto: '#2A1C14',
+  textoSuave: '#6A5646',
+  acento: '#B8452A',
+  secundario: '#1F6F6B',
+  sobreAcento: '#FFF8EE',
+  borde: '#D9C7AA',
+  error: '#9C1C1C',
 };
 
 export type Paleta = typeof coloresClaro;
 
 export const coloresOscuro: Paleta = {
-  fondo: '#0B1519',
-  superficie: '#16262D',
-  texto: '#F2F7F9',
-  textoSuave: '#A9BCC4',
-  acento: '#7CC0F0',
-  sobreAcento: '#06243A',
-  borde: '#3A5560',
-  error: '#FFB4AB',
+  fondo: '#1C130E',
+  superficie: '#2A1D16',
+  texto: '#F5E9D6',
+  textoSuave: '#C4AE96',
+  acento: '#E8825F',
+  secundario: '#6FC2B8',
+  sobreAcento: '#2A1208',
+  borde: '#4D392C',
+  error: '#FF9C8F',
 };
 
 export const paletas = { claro: coloresClaro, oscuro: coloresOscuro };
+
+// Formas propias: esquinas desparejas (una grande y el resto chicas) en vez del mismo redondeo en todo.
+export const formas = {
+  tarjeta: {
+    borderTopLeftRadius: 22,
+    borderTopRightRadius: 6,
+    borderBottomRightRadius: 22,
+    borderBottomLeftRadius: 6,
+  },
+  boton: {
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 6,
+    borderBottomRightRadius: 24,
+    borderBottomLeftRadius: 6,
+  },
+} as const;

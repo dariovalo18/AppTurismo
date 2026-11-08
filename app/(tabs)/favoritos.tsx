@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Pressable, StyleSheet, View } from 'react-native';
+import { Texto as Text } from '@/componentes/Texto';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import Ionicons from '@react-native-vector-icons/ionicons';
@@ -130,7 +131,7 @@ function FilaFavorito({ lugar, onPress }: { lugar: Lugar; onPress: () => void })
           {lugar.descripcionCorta}
         </Text>
         {apertura ? (
-          <Text style={[styles.apertura, { color: apertura.abierto ? paleta.acento : paleta.error }]}>
+          <Text style={[styles.apertura, { color: apertura.abierto ? paleta.secundario : paleta.error }]}>
             {apertura.texto}
           </Text>
         ) : null}
@@ -171,12 +172,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     padding: 10,
     borderWidth: 2,
-    borderRadius: 10,
   },
   ruedita: { marginTop: 40 },
   lista: { padding: 20, gap: 12 },
-  fila: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 12, borderRadius: 14, borderWidth: 1 },
-  foto: { width: 72, height: 72, borderRadius: 10 },
+  fila: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 12, borderWidth: 1 },
+  foto: { width: 72, height: 72,},
   sinFoto: { alignItems: 'center', justifyContent: 'center' },
   textos: { flex: 1, gap: 2 },
   nombre: { fontSize: 18, fontWeight: '700' },

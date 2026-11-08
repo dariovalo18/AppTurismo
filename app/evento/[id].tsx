@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, ScrollView, StyleSheet, View } from 'react-native';
+import { Texto as Text } from '@/componentes/Texto';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
@@ -253,8 +254,8 @@ const styles = StyleSheet.create({
   pantalla: { flex: 1 },
   centro: { alignItems: 'center', justifyContent: 'center', gap: 12, padding: 16 },
   contenido: { padding: 16, gap: 12 },
-  imagen: { width: '100%', aspectRatio: 16 / 9, borderRadius: 12 },
-  aviso: { fontSize: 18, lineHeight: 26, fontWeight: '600', padding: 12, borderWidth: 1, borderRadius: 12 },
+  imagen: { width: '100%', aspectRatio: 16 / 9,},
+  aviso: { fontSize: 18, lineHeight: 26, fontWeight: '600', padding: 12, borderWidth: 1,},
   titulo: { fontSize: 28, fontWeight: '800' },
   texto: { fontSize: 18, lineHeight: 26 },
   subtitulo: { fontSize: 22, fontWeight: '700' },

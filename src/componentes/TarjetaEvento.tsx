@@ -1,4 +1,5 @@
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { Texto as Text } from '@/componentes/Texto';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
 import { useTema } from '@/proveedores/ProveedorTema';
@@ -75,7 +76,7 @@ export function TarjetaEvento({ evento, onPress, guardado, mostrarFecha }: Props
 
 // ESTÉTICA: estilos con StyleSheet de React Native (medidas y disposición; los colores salen de la paleta).
 const styles = StyleSheet.create({
-  tarjeta: { borderWidth: 1, borderRadius: 14, overflow: 'hidden' },
+  tarjeta: { borderWidth: 1, overflow: 'hidden' },
   imagen: { width: '100%', aspectRatio: 16 / 7 },
   cuerpo: { padding: 14, gap: 6 },
   filaArriba: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 8 },
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
   tachado: { textDecorationLine: 'line-through' },
   filaAbajo: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 10 },
   precio: { fontSize: 16, fontWeight: '600' },
-  etiqueta: { borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4, alignSelf: 'flex-start' },
+  etiqueta: { paddingHorizontal: 10, paddingVertical: 4, alignSelf: 'flex-start' },
   etiquetaGrande: { paddingHorizontal: 14, paddingVertical: 8 },
   etiquetaTexto: { color: '#FFFFFF', fontSize: 15, fontWeight: '800' },
   etiquetaTextoGrande: { fontSize: 18 },

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Texto as Text } from '@/componentes/Texto';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import Ionicons from '@react-native-vector-icons/ionicons';
@@ -183,7 +184,7 @@ function TarjetaLugar({ lugar, compacta, onPress }: { lugar: Lugar; compacta: bo
       style={[
         styles.tarjeta,
         compacta && styles.tarjetaCompacta,
-        { backgroundColor: paleta.superficie, borderColor: paleta.borde },
+        { backgroundColor: paleta.superficie, borderColor: paleta.borde, borderBottomColor: paleta.acento },
       ]}
     >
       {/* Algunos lugares no tienen fotos. */}
@@ -204,7 +205,7 @@ function TarjetaLugar({ lugar, compacta, onPress }: { lugar: Lugar; compacta: bo
           </Text>
         )}
         {apertura ? (
-          <Text style={[styles.apertura, { color: apertura.abierto ? paleta.acento : paleta.error }]}>
+          <Text style={[styles.apertura, { color: apertura.abierto ? paleta.secundario : paleta.error }]}>
             {apertura.texto}
           </Text>
         ) : null}
@@ -219,16 +220,16 @@ const styles = StyleSheet.create({
   pantalla: { flex: 1, paddingHorizontal: 16, gap: 12 },
   encabezado: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 },
   titulo: { fontSize: 28, fontWeight: '800' },
-  botonVista: { width: 48, height: 48, borderWidth: 2, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
+  botonVista: { width: 48, height: 48, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
   columnas: { gap: 12 },
-  buscador: { minHeight: 56, borderWidth: 2, borderRadius: 12, paddingHorizontal: 14, fontSize: 18 },
+  buscador: { minHeight: 56, borderWidth: 2, paddingHorizontal: 14, fontSize: 18 },
   categorias: { gap: 8, paddingVertical: 4 },
-  chip: { minHeight: 44, borderWidth: 2, borderRadius: 22, paddingHorizontal: 16, justifyContent: 'center' },
+  chip: { minHeight: 44, borderWidth: 2, paddingHorizontal: 16, justifyContent: 'center' },
   chipTexto: { fontSize: 16, fontWeight: '700' },
   centro: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12 },
   mensaje: { fontSize: 18, textAlign: 'center', marginTop: 24 },
   lista: { gap: 12, paddingBottom: 24 },
-  tarjeta: { borderWidth: 1, borderRadius: 12, overflow: 'hidden' },
+  tarjeta: { borderWidth: 1, borderBottomWidth: 4, overflow: 'hidden' }, // cuadrada, con un filo marcado abajo
   tarjetaCompacta: { flex: 1 }, // en la cuadrícula, cada tarjeta ocupa la mitad del ancho
   foto: { width: '100%' },
   sinFoto: { alignItems: 'center', justifyContent: 'center' },

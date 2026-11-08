@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { Texto as Text } from '@/componentes/Texto';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useFocusEffect } from 'expo-router';
 import Ionicons from '@react-native-vector-icons/ionicons';
@@ -235,7 +236,7 @@ const styles = StyleSheet.create({
   pantalla: { flex: 1 },
   encabezado: { paddingHorizontal: 16, paddingTop: 12, gap: 12 },
   titulo: { fontSize: 28, fontWeight: '800' },
-  selector: { flexDirection: 'row', borderWidth: 2, borderRadius: 12, overflow: 'hidden' },
+  selector: { flexDirection: 'row', borderWidth: 2, overflow: 'hidden' },
   opcion: { flex: 1, minHeight: 48, alignItems: 'center', justifyContent: 'center', paddingVertical: 8 },
   opcionTexto: { fontSize: 17, fontWeight: '700' },
   dias: { paddingHorizontal: 16, paddingVertical: 12, gap: 8 },
@@ -243,7 +244,6 @@ const styles = StyleSheet.create({
     minWidth: 76,
     minHeight: 64,
     borderWidth: 2,
-    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 10,
@@ -259,7 +259,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     padding: 12,
     borderWidth: 1,
-    borderRadius: 12,
   },
   avisoTexto: { fontSize: 16, fontWeight: '600', flex: 1 },
   lista: { padding: 16, paddingTop: 4, gap: 12, flexGrow: 1 },

@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, StyleSheet, View } from 'react-native';
+import { Texto as Text } from '@/componentes/Texto';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import * as Network from 'expo-network';
@@ -213,15 +214,15 @@ const styles = StyleSheet.create({
   cabecera: { gap: 12 },
   titulo: { fontSize: 28, fontWeight: '800' },
   subtitulo: { fontSize: 22, fontWeight: '700', marginTop: 8 },
-  aviso: { fontSize: 18, lineHeight: 26, borderWidth: 2, borderRadius: 12, padding: 12 },
+  aviso: { fontSize: 18, lineHeight: 26, borderWidth: 2, padding: 12 },
   textoAviso: { fontSize: 18, lineHeight: 26 },
   vacio: { gap: 12, paddingVertical: 16 },
   mensaje: { fontSize: 18, lineHeight: 26 },
-  tarjeta: { borderWidth: 2, borderRadius: 12, padding: 14, gap: 6 },
+  tarjeta: { borderWidth: 2, padding: 14, gap: 6 },
   parada: { fontSize: 16, fontWeight: '700' },
   lugar: { fontSize: 22, fontWeight: '800' },
   detalle: { fontSize: 16 },
-  foto: { width: '100%', height: 200, borderRadius: 12, marginTop: 4 },
+  foto: { width: '100%', height: 200, marginTop: 4 },
   nota: { fontSize: 18, lineHeight: 26, marginTop: 4 },
   estado: { fontSize: 16, fontWeight: '600', marginTop: 4 },
 });

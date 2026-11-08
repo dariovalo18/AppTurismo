@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, FlatList, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Linking, Pressable, StyleSheet, View } from 'react-native';
+import { Texto as Text } from '@/componentes/Texto';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
@@ -206,7 +207,7 @@ const styles = StyleSheet.create({
   cuerpoCentro: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, padding: 16 },
   lista: { gap: 10, paddingBottom: 24 },
   mensaje: { fontSize: 18, lineHeight: 26, textAlign: 'center' },
-  fila: { minHeight: 64, borderWidth: 2, borderRadius: 12, padding: 14, gap: 2, justifyContent: 'center' },
+  fila: { minHeight: 64, borderWidth: 2, padding: 14, gap: 2, justifyContent: 'center' },
   filaNombre: { fontSize: 20, fontWeight: '700' },
   filaDetalle: { fontSize: 16 },
 });

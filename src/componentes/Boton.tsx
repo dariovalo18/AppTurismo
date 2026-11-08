@@ -1,4 +1,5 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet } from 'react-native';
+import { Texto as Text } from '@/componentes/Texto';
 
 import { useTema } from '@/proveedores/ProveedorTema';
 
@@ -48,11 +49,10 @@ export function Boton({ etiqueta, onPress, variante = 'principal', cargando, des
 const styles = StyleSheet.create({
   base: {
     minHeight: 56,
-    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  etiqueta: { fontSize: 18, fontWeight: '700', textAlign: 'center' },
+  etiqueta: { fontSize: 18, fontWeight: '700', textAlign: 'center', letterSpacing: 0.4 },
 });
