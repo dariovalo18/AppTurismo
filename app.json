@@ -8,7 +8,7 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "bundleIdentifier": "ar.tur.colon.miciudad",
+      "bundleIdentifier": "uner.miciudad.apk",
       "infoPlist": {
         "NSFaceIDUsageDescription": "Usamos Face ID para que entres rápido sin escribir la contraseña.",
         "UIBackgroundModes": [
@@ -17,7 +17,7 @@
       }
     },
     "android": {
-      "package": "ar.tur.colon.miciudad",
+      "package": "uner.miciudad.apk",
       "predictiveBackGestureEnabled": true,
       "permissions": [
         "android.permission.USE_BIOMETRIC"
