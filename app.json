@@ -18,9 +18,19 @@
     },
     "android": {
       "package": "uner.miciudad.apk",
+      "googleServicesFile": "./google-services.json",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyALICq-WF41KwhKQnO_foJQ6VSv6gIpiGo"
+        }
+      },
       "predictiveBackGestureEnabled": true,
       "permissions": [
-        "android.permission.USE_BIOMETRIC"
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.CAMERA",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
@@ -75,6 +85,13 @@
     "experiments": {
       "typedRoutes": true
     },
-    "icon": "./assets/icon.png"
+    "icon": "./assets/icon.png",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "5aa45ab6-e6ba-4d03-b3e3-2582cc2a28d2"
+      }
+    },
+    "owner": "grupo17"
   }
 }

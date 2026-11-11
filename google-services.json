@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "99671840234",
+    "project_id": "unermiciudadapk",
+    "storage_bucket": "unermiciudadapk.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:99671840234:android:d554e620b296eb8f73ce93",
+        "android_client_info": {
+          "package_name": "uner.miciudad.apk"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_vu8_zzZv6E8GC-IzBNxf4S4LCeuQy9c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
