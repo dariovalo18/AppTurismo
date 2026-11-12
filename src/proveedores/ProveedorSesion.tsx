@@ -85,11 +85,8 @@ export function ProveedorSesion({ children }: { children: ReactNode }) {
 
   // Login con email y contraseña: guarda el token y pasa al modo 'sesion'.
   const ingresar = useCallback(async (credenciales: CredencialesLogin) => {
-    console.log('[Login] enviando', { email: credenciales.email });
     const { datos } = await iniciarSesion(credenciales);
-    console.log('[Login] respuesta de la API', { usuario: datos.usuario, token: `${datos.token.slice(0, 12)}…` });
     await guardarToken(datos.token);
-    console.log('[Login] sesión iniciada, modo -> sesion');
     setUsuario(datos.usuario);
     setPreguntarIntereses(true);
     setModo('sesion');
