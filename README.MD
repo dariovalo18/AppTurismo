@@ -89,7 +89,7 @@ src/
 
 ## Funcionalidades
 
-### Persona 2 · Mapa y ubicación
+###  Mapa y ubicación
 
 - **Mapa** (`react-native-maps`) centrado en Colón, con un pin por lugar del color de su categoría.
 - **Filtro por categoría** arriba del mapa.
@@ -101,7 +101,7 @@ src/
 - **Aviso de proximidad** (`expo-notifications`, notificación local): uno por lugar y por día, y como mínimo 10 minutos entre avisos. Respeta las preferencias del usuario (activado o no, y radio de 100, 250 o 500 m); sin cuenta avisa a 250 m. **Funciona mientras la app está abierta.**
 - **Audioguías sin señal** (`expo-file-system`): botón en el detalle para bajar el audio al teléfono.
 
-### Persona 3 · Agenda y notificaciones
+###  Agenda y notificaciones
 
 - **Agenda por día** empezando por hoy: tira con los próximos 14 días (`GET /eventos?fecha=`). Un evento que pasa la medianoche aparece en los dos días (lo resuelve la API).
 - **Detalle del evento**: qué es, cuándo empieza, cuánto dura, dónde (lugar del catálogo con "Ver el lugar", o dirección suelta), si es gratis, "Cómo llegar".
@@ -113,7 +113,6 @@ src/
 - **Sin señal**: la agenda y los guardados se guardan en SQLite (tabla `agenda_cache`) y se muestran con el aviso "Sin conexión".
 - **Administración** (`turismo@colon.demo.ar`): en el detalle, botones para suspender, cancelar o volver a programar (`PATCH /eventos/{id}/estado`).
 
-_(Las demás personas completan su sección.)_
 
 ---
 
