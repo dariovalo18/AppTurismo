@@ -1,6 +1,4 @@
-Chicos la documentacion y el API quedo en esta URL https://entrerios.voipgroup.com/docs
-
-# Mi Ciudad Colón · Guía turística - 
+# Mi Ciudad Colón · Guía turística
 
 App móvil para el turista que visita Colón (Entre Ríos): lugares, mapa con lo que tenés cerca, agenda de eventos, tu recorrido y audioguías. Funciona sin señal con la información que ya se descargó.
 
@@ -8,17 +6,54 @@ Trabajo Final Integrador de **Desarrollo para Móviles** — Tecnicatura Univers
 
 ## Integrantes
 
-| Integrante | Parte |
-|---|---|
-| _ Dario Gabriel Arias  | Catálogo, offline y entrega |
-| _ Andrés Agustín Garcia  | Mapa y ubicación |
-| _ Daniel Esteban Clementín | Agenda y notificaciones |
-| _ Valentin Suarez  | Mi recorrido y visitas offline |
-| _ Nicolas Ibarra  | Cuenta, favoritos y audioguías |
+| | Integrante | Qué hizo |
+|---|---|---|
+| 1 | **Dario Gabriel Arias** | La base de la app: login con huella, sesión y tema claro/oscuro. El listado de lugares con búsqueda y filtro, el detalle de cada lugar y el "abierto ahora". Que todo ande sin señal (guarda el catálogo en el celu con SQLite). El build del APK y la parte de push del servidor |
+| 2 | **Andres Agustin Garcia** | Todo lo de ubicación y mapa: el mapa con los pines por categoría y sus filtros, el Inicio con "Cerca tuyo", la distancia a cada lugar, la flecha que apunta al lugar (con la brújula del celu), el botón "Cómo llegar", el aviso cuando pasás cerca de un lugar y la descarga de audioguías para escucharlas sin señal |
+| 3 | **Valentin Suarez** | La agenda: eventos por día, el detalle de cada evento, guardarlos, el recordatorio antes de que empiecen, los estados (suspendido, cancelado, finalizado) y registrar el celu para recibir push |
+| 4 | **Daniel Clementin** | Mi recorrido: registrar una visita escaneando el QR del cartel, por GPS o a mano, con foto y nota. Si no hay señal, la visita queda guardada en el celu y se sube sola cuando vuelve internet. Vibra al registrar |
+| 5 | **Nicolas Ibarra** | La cuenta: registrarse, elegir tus intereses y editar el perfil y las preferencias. Los favoritos (el corazoncito) y el reproductor de audioguías (pausa, adelantar, sigue sonando con la pantalla apagada) |
 
 ## Tecnologías
 
 React Native con **Expo SDK 54**, TypeScript y Expo Router. La API es la de la cátedra (`api-mi-ciudad`).
+
+- **API publicada:** https://entrerios.voipgroup.com
+- **Documentación de la API:** https://entrerios.voipgroup.com/docs
+
+---
+
+## Instalar la app (APK)
+
+La app se instala como un **APK**, que es el instalador de las apps de Android. No hace falta Play Store, ni la compu, ni Expo Go: se instala y anda sola. No está publicada en ninguna tienda.
+
+**El archivo del APK se entrega en el Campus Virtual**, junto con este código.
+
+### Paso a paso
+
+1. **Pasá el archivo `.apk` al celular** (Android): podés descargarlo del Campus directamente desde el celu, o mandártelo por WhatsApp, Drive o cable USB.
+2. **Abrí el archivo** desde la carpeta *Descargas* (o desde donde lo hayas guardado).
+3. Si el celu dice que no deja instalar apps de **origen desconocido**, tocá **Configuración** → activá **Permitir de esta fuente** → volvé atrás.
+4. Tocá **Instalar**.
+5. Si salta **Google Play Protect** diciendo que la app es desconocida, es normal porque no viene de Play Store. Tocá **Más detalles → Instalar de todas formas**.
+   - Si no aparece esa opción: Play Store → tu foto de perfil → **Play Protect** → ⚙ → desactivá **Analizar apps con Play Protect**, instalá la app y después volvé a activarlo.
+6. Si dice **"App no instalada"**, desinstalá cualquier versión anterior de *Mi Ciudad Colón* y probá de nuevo.
+
+### La primera vez que la abrís
+
+- **Abrila con internet**: así baja los lugares y los guarda en el celu. Después anda aunque no tengas señal.
+- Entrá con un usuario de prueba (ver más abajo) o tocá **Continuar sin cuenta** para mirar sin registrarte.
+- Te va a pedir algunos permisos. Podés decir que no a cualquiera y la app sigue andando, solo que sin esa parte:
+
+| Permiso | Para qué |
+|---|---|
+| Ubicación | Ver a qué distancia está cada lugar, "Cerca tuyo" y el aviso cuando pasás cerca de algo |
+| Notificaciones | Recordatorios de eventos, avisos de eventos suspendidos y el aviso de proximidad |
+| Cámara | Escanear el QR de los carteles y sacar fotos de tus visitas |
+| Fotos | Elegir una foto de la galería para tu recorrido |
+| Huella / rostro | Entrar rápido sin escribir la contraseña |
+
+> **iPhone:** el APK es solo para Android. En iPhone se prueba con Expo Go (ver "Cómo ejecutarla").
 
 ---
 
@@ -77,42 +112,17 @@ El perfil `preview` está en `eas.json` y genera un APK que se instala y anda si
 app/                  Pantallas (Expo Router: cada archivo es una ruta)
   (tabs)/             Pestañas de abajo: inicio, mapa, agenda, recorrido, yo
   lugar/[id].tsx      Detalle de un lugar
-  login.tsx
+  evento/[id].tsx     Detalle de un evento
+  visita/             Registrar una visita (QR, GPS o a mano)
+  login.tsx, registro.tsx, intereses.tsx
 src/
   componentes/        Componentes reutilizables
   hooks/              useUbicacion, useCatalogo, useRumbo
-  servicios/          Llamadas a la API, caché offline, notificaciones, audioguías
+  servicios/          Llamadas a la API, caché offline, notificaciones, push, visitas, audioguías
   db/                 Base SQLite local
   tipos/              Tipos del PDF (no se modifican)
-  utilidades/         Horarios, distancias, cómo llegar
+  utilidades/         Horarios, fechas, distancias, QR, cómo llegar
 ```
-
-## Funcionalidades
-
-###  Mapa y ubicación
-
-- **Mapa** (`react-native-maps`) centrado en Colón, con un pin por lugar del color de su categoría.
-- **Filtro por categoría** arriba del mapa.
-- **Tarjeta del lugar** al tocar un pin: categoría, si está abierto, distancia, flecha, "Ver detalle" y "Cómo llegar".
-- **Ubicación** (`expo-location`): si se niega el permiso o el GPS está apagado, la app sigue andando y lo avisa.
-- **Inicio** con un mapa chico y **"Cerca tuyo"**: los 5 lugares más cercanos, ordenados por distancia.
-- **Cómo llegar**: abre Google Maps (Apple Maps en iPhone) caminando o en auto.
-- **Flecha hacia el lugar** con el magnetómetro (`expo-sensors`).
-- **Aviso de proximidad** (`expo-notifications`, notificación local): uno por lugar y por día, y como mínimo 10 minutos entre avisos. Respeta las preferencias del usuario (activado o no, y radio de 100, 250 o 500 m); sin cuenta avisa a 250 m. **Funciona mientras la app está abierta.**
-- **Audioguías sin señal** (`expo-file-system`): botón en el detalle para bajar el audio al teléfono.
-
-###  Agenda y notificaciones
-
-- **Agenda por día** empezando por hoy: tira con los próximos 14 días (`GET /eventos?fecha=`). Un evento que pasa la medianoche aparece en los dos días (lo resuelve la API).
-- **Detalle del evento**: qué es, cuándo empieza, cuánto dura, dónde (lugar del catálogo con "Ver el lugar", o dirección suelta), si es gratis, "Cómo llegar".
-- **Estados**: suspendido, cancelado y finalizado se ven con un cartel de color; los cancelados, tachados.
-- **Guardar evento** (pide cuenta, `PUT /yo/eventos-guardados/{id}`) y pestaña **Guardados**. Se pueden guardar programados y suspendidos.
-- **Recordatorio** 1 hora antes (`expo-notifications`, notificación local programada: anda sin señal y en Expo Go). Al tocarlo se abre el evento.
-- **Si un evento guardado se suspende, se cancela o cambia de horario**: la app lo detecta al abrirse, avisa y reprograma o cancela el recordatorio. Además la API manda una push.
-- **Push**: al entrar con cuenta se pide permiso, se obtiene el token de Expo y se registra con `POST /dispositivos`. Al cerrar sesión se da de baja (`DELETE /dispositivos/{token}`) y se borran los recordatorios.
-- **Sin señal**: la agenda y los guardados se guardan en SQLite (tabla `agenda_cache`) y se muestran con el aviso "Sin conexión".
-- **Administración** (`turismo@colon.demo.ar`): en el detalle, botones para suspender, cancelar o volver a programar (`PATCH /eventos/{id}/estado`).
-
 
 ---
 
@@ -120,6 +130,7 @@ src/
 
 | Qué pasa | Qué hacer |
 |---|---|
+| Play Protect no deja instalar el APK | Ver el paso 5 de "Instalar la app (APK)" |
 | Expo Go dice *"Project is incompatible with this version of Expo Go"* | Instalar Expo Go para SDK 54 desde https://expo.dev/go (ver Requisitos) |
 | Cartel rojo *"Android Push notifications ... removed from Expo Go with SDK 53"* | Es solo un aviso de Expo Go sobre las notificaciones push del servidor. Tocar **Dismiss**: las notificaciones locales funcionan igual |
 | La app no muestra los cambios | Guardar todos los archivos y reiniciar con `npx expo start -c` |
@@ -130,7 +141,5 @@ src/
 ## Notas para probar
 
 - **Aviso de proximidad desde lejos de Colón:** en el Mapa hay un botón con un frasquito que manda el aviso del lugar más cercano. Aparece solo en desarrollo (Expo Go); en el APK no se ve.
-- **Mapa en el APK:** en Android, `react-native-maps` necesita una API key de Google Maps en `app.json` para verse en el APK. En Expo Go funciona sin key.
+- **Push del servidor:** en Expo Go para Android no funcionan; se prueban con el APK. Para probarlas, entrar con `turismo@colon.demo.ar` y suspender un evento que otra cuenta tenga guardado.
 - **Coordenadas:** son las que manda la API de la cátedra, que son aproximadas.
-- **Recordatorio de un evento sin esperar:** guardá un evento que empiece en poco más de 1 hora (o bajá `MINUTOS_ANTES` en `src/servicios/recordatorios.ts` solo para probar).
-- **Push del servidor:** no andan en Expo Go para Android; hace falta un development build o el APK. Además necesitan el `projectId` de EAS en `app.json` (`npx eas-cli init`) y el backend de `/dispositivos` completo.
