@@ -10,11 +10,11 @@ Trabajo Final Integrador de **Desarrollo para Móviles** — Tecnicatura Univers
 
 | Integrante | Parte |
 |---|---|
-| _(completar)_ | Persona 1 · Catálogo, offline y entrega |
-| _(completar)_ | Persona 2 · Mapa y ubicación |
-| _(completar)_ | Persona 3 · Agenda y notificaciones |
-| _(completar)_ | Persona 4 · Mi recorrido y visitas offline |
-| _(completar)_ | Persona 5 · Cuenta, favoritos y audioguías |
+| _ Dario Gabriel Arias · Catálogo, offline y entrega |
+| _ Andrés Agustín Garcia · Mapa y ubicación |
+| _ Daniel Esteban Clementín · Agenda y notificaciones |
+| _ Valentin Suarez · Mi recorrido y visitas offline |
+| _ Nicolas Ibarra · Cuenta, favoritos y audioguías |
 
 ## Tecnologías
 
