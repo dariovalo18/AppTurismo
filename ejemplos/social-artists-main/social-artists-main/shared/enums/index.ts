@@ -1,1 +1,0 @@
-export {mapListType} from './map-list-type';
